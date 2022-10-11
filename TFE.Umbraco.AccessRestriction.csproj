@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<StaticWebAssetBasePath>App_Plugins/TFE.Umbraco.AccessRestriction</StaticWebAssetBasePath>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<ContentTargetFolders>.</ContentTargetFolders>
+	</PropertyGroup>
+
+	 <!--Information for the NuGet package -->
+	<PropertyGroup>
+		<PackageId>TFE.Umbraco.AccessRestriction</PackageId>
+		<Product>TFE.Umbraco.AccessRestriction</Product>
+		<Title>TFE.Umbraco.AccessRestriction</Title>
+		<Description>IP access restriction manager for Umbraco CMS </Description>
+		<Version>10.2.1</Version>
+		<Authors>Rutger Dijkstra</Authors>
+		<PackageTags>Umbraco, Plugin, Package, Access restriction, Ip Whitelist, Ip Blacklist, Umbraco-Marketplace, TFE, theFactor.e</PackageTags>
+		<PackageProjectUrl></PackageProjectUrl>
+		<PackageIcon>TFE.Umbraco.AccessRestriction.Icon.png</PackageIcon>
+		<RepositoryUrl>https://github.com/tfe-github/TFE.Umbraco.AccessRestriction</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+	</PropertyGroup>
+
+	 <!--Include NuGet dependencies-->
+	<ItemGroup>
+		<PackageReference Include="Umbraco.Cms.Web.Website" Version="10.2.1" />
+		<PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="10.2.1" />
+	</ItemGroup>
+
+	 <!--Include NuGet dependencies -->
+	<ItemGroup>
+		<Content Remove="wwwroot\**\*" />
+		<Content Include="wwwroot\**\*.css" />
+		<Content Include="wwwroot\**\*.html" />
+		<Content Include="wwwroot\**\*.js" />
+		<Content Include="wwwroot\Lang\*.xml" />
+		<Content Include="LICENSE.md" />
+		<Content Include="README.md" />
+		<Content Include="TFE.Umbraco.AccessRestriction.Icon.png" />
+	</ItemGroup>
+</Project>

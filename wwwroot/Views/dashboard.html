@@ -1,0 +1,29 @@
+﻿<div class="welcome-dashboard" ng-controller="TFE.AccessRestrictionController as vm">
+    <umb-button type="button" ng-click="vm.new()" button-style="action" label="+ Add"></umb-button>
+    <div>
+        <h3>Whitelisted IP Adresses</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>IP</th>
+                    <th>Description</th>                   
+                    <th>Modified</th>
+                    <th>Modified By</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="entry in vm.ipEntries">
+                    <td>{{ entry.ip }}</td>
+                    <td>{{ entry.description }}</td>                   
+                    <td>{{ entry.modified | date : "mediumDate" }}</td>
+                    <td>{{ entry.modifiedBy }}</td>
+                    <td>
+                        <umb-button type="button" ng-click="vm.open(entry.id)" button-style="info" label="Edit"></umb-button>
+                        <umb-button type="button" ng-click="vm.delete(entry.id)" button-style="danger" label="Delete"></umb-button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div> 
+</div>
