@@ -21,7 +21,7 @@
 		<PackageTags>Umbraco, Plugin, Package, Access restriction, Ip Whitelist, Ip Blacklist, Umbraco-Marketplace, TFE, theFactor.e</PackageTags>
 		<PackageProjectUrl></PackageProjectUrl>
 		<PackageIcon>TFE.Umbraco.AccessRestriction.Icon.png</PackageIcon>
-		<RepositoryUrl>https://github.com/tfe-github/TFE.Umbraco.AccessRestriction</RepositoryUrl>
+		<RepositoryUrl>https://github.com/theFactore/TFE.Umbraco.AccessRestriction</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
