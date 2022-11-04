@@ -17,13 +17,13 @@
 The Umbraco 10 version of this package is only available via [NuGet](https://www.nuget.org/packages/TFE.Umbraco.AccessRestriction). To install the package, you can use either .NET CLI:
 
 ```C#
-dotnet add package TFE.Umbraco.AccessRestriction --version 10.2.1
+dotnet add package TFE.Umbraco.AccessRestriction --version 10.3.2
 ```
 
 or the older NuGet Package Manager:
 
 ```C#
-NuGet\Install-Package TFE.Umbraco.AccessRestriction -Version 10.2.1
+NuGet\Install-Package TFE.Umbraco.AccessRestriction -Version 10.3.2
 ```
 
 ## Umbraco Installation
@@ -50,12 +50,14 @@ Add these settings to appsettings.json
     "localHost": "127.0.0.1"
   }
 ```
+### Umbraco Cloud Installation
+>When installing on Umbraco Cloud make sure to add your Umbraco Cloud IP Addresses 
 
 ## Features
 
 - Global dashboard for listing all whitelisted IP addresses.
 - Package only handles IP addresses added manually by a user with admin rights.
-- logBlockedIP enables you to see all blocked IP addresses in the Umbraco log
+- logBlockedIP enables you to see all blocked IP addresses in the Umbraco log.
 
 ## Contribution guidelines
 

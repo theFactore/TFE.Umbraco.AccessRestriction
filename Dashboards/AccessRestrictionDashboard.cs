@@ -15,14 +15,14 @@ namespace TFE.Umbraco.AccessRestriction.Dashboards
     {
         private readonly Helper _helper;               
 
-        public string Alias => "TFE.Umbraco.AccessRestriction";
+        public string Alias => TFEConstants.PackageName;
 
         public string[] Sections => new[]
         {
            Constants.Applications.Content,          
         };
 
-        public string View => $"/App_Plugins/TFE.Umbraco.AccessRestriction/Views/dashboard.html?v={_helper.GetCacheBuster()}";
+        public string View => $"/App_Plugins/{TFEConstants.PackageName}/Views/dashboard.html?v={_helper.GetCacheBuster()}";
 
         public IAccessRule[] AccessRules => Array.Empty<IAccessRule>();
 

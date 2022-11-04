@@ -3,6 +3,8 @@
     public static class TFEConstants
     {
         public const string Prefix = "tfe";
+        public const string PackageName = "TFE.Umbraco.AccessRestriction";
+
 
         public static class DatabaseSchema
         {
@@ -18,5 +20,6 @@
 
             public const string TargetState = Prefix + "IPAccessRestriction_1";
         }
+
     }
 }
