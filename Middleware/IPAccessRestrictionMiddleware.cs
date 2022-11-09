@@ -51,7 +51,7 @@ namespace TFE.Umbraco.AccessRestriction.Middleware
             var path = context.Request.Path;
             var excludePaths = string.IsNullOrEmpty(configExcludePaths) ? null : configExcludePaths.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
 
-            if (excludePaths != null && !excludePaths.Any(p => path.StartsWithSegments(p.Trim())))
+            if (excludePaths == null || excludePaths != null && !excludePaths.Any(p => path.StartsWithSegments(p.Trim())))
             {
                 var configLocalhost = section.GetValue<string>("localhost");
 
