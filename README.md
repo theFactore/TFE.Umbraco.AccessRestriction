@@ -50,8 +50,8 @@ Add these settings to appsettings.json
     "localHost": "127.0.0.1"
   }
 ``` 
-### Umbraco Cloud Installation
->When installed on Umbraco Cloud make sure to add your Umbraco Cloud IP Addresses. Replace the following excludePaths property in appsettings.json :
+### Azure / CloudFlare  / Umbraco Cloud Installation
+>When installed on a cloud environment make sure to add your the cloud IP Addresses. Replace the following excludePaths property in appsettings.json :
 ```C#
  "excludePaths": "/umbraco, /App_Plugins, /umbraco-signin-oidc, /sb", 
 ```
