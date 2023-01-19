@@ -16,7 +16,7 @@
 		<Product>TFE.Umbraco.AccessRestriction</Product>
 		<Title>TFE.Umbraco.AccessRestriction</Title>
 		<Description>IP access restriction manager for Umbraco CMS </Description>
-		<Version>10.3.2.2</Version>
+		<Version>10.4.0.0</Version>
 		<Authors>Rutger Dijkstra</Authors>
 		<PackageTags>Umbraco, Plugin, Package, Access restriction, Ip Whitelist, Ip Blacklist, Umbraco-Marketplace, TFE, theFactor.e</PackageTags>
 		<PackageProjectUrl></PackageProjectUrl>
@@ -25,12 +25,13 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+		<CodeAnalysisRuleSet>..\TFE.Umbraco.AccessRestriction.TestWeb\.sonarlint\umbracopackageaccessrestrictioncsharp.ruleset</CodeAnalysisRuleSet>
 	</PropertyGroup>
 
 	 <!--Include NuGet dependencies-->
 	<ItemGroup>
-		<PackageReference Include="Umbraco.Cms.Web.Website" Version="10.3.2" />
-		<PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="10.3.2" />
+		<PackageReference Include="Umbraco.Cms.Web.Website" Version="10.4.0" />
+		<PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="10.4.0" />
 	</ItemGroup>
 
 	 <!--Include NuGet dependencies -->
@@ -40,6 +41,7 @@
 		<Content Include="wwwroot\**\*.html" />
 		<Content Include="wwwroot\**\*.js" />
 		<Content Include="wwwroot\Lang\*.xml" />
+		<AdditionalFiles Include="..\TFE.Umbraco.AccessRestriction.TestWeb\.sonarlint\umbracopackageaccessrestriction\CSharp\SonarLint.xml" Link="SonarLint.xml" />
 		<Content Include="LICENSE.md" />
 		<Content Include="README.md" />
 		<Content Include="TFE.Umbraco.AccessRestriction.Icon.png" />

@@ -5,18 +5,15 @@ using TFE.Umbraco.AccessRestriction.Repositories;
 using Umbraco.Cms.Core.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using TFE.Umbraco.AccessRestriction.Startup;
-using Umbraco.Cms.Web.Common.ApplicationBuilder;
 
-namespace TFE.Umbraco.AccessRestriction.Composers
+namespace TFE.Umbraco.AccessRestriction.Composers;
+public class AccessRestrictionComposer : IComposer
 {
-    public class AccessRestrictionComposer : IComposer
+    public void Compose(IUmbracoBuilder builder)
     {
-        public void Compose(IUmbracoBuilder builder)
-        {
-            builder.AddNotificationHandler<UmbracoApplicationStartingNotification, MigrationRunner>();
-            builder.Services.AddScoped<IIPAccessRestrictionRepository, IPAccessRestrictionRepository>();
-            builder.Services.AddSingleton<Helpers.Helper>();
-            builder.ManifestFilters().Append<ManifestFilter>();
-        }
+        builder.AddNotificationHandler<UmbracoApplicationStartingNotification, MigrationRunner>();
+        builder.Services.AddScoped<IIPAccessRestrictionRepository, IPAccessRestrictionRepository>();
+        builder.Services.AddSingleton<Helpers.Helper>();
+        builder.ManifestFilters().Append<ManifestFilter>();
     }
 }

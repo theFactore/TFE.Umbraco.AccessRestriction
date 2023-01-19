@@ -1,93 +1,67 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using TFE.Umbraco.AccessRestriction.Models;
 using TFE.Umbraco.AccessRestriction.Repositories;
 using Umbraco.Cms.Core;
-using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.Services;
 
-namespace TFE.Umbraco.AccessRestriction.Middleware
+namespace TFE.Umbraco.AccessRestriction.Middleware;
+public class IPAccessRestrictionMiddleware
 {
-    public class IPAccessRestrictionMiddleware
+    private readonly IRuntimeState _runtimeState;
+    private readonly RequestDelegate _next;
+    private readonly Config _config;
+
+    public IPAccessRestrictionMiddleware(IRuntimeState runtimeState, RequestDelegate next, IConfiguration config)
     {
-        private readonly IRuntimeState _runtimeState;
-        private readonly RequestDelegate _next;  
-        private readonly IConfiguration _config;
-     
-        public IPAccessRestrictionMiddleware(IRuntimeState runtimeState, RequestDelegate next, IConfiguration config)
+        _runtimeState = runtimeState;
+        _next = next;
+        _config = config.GetSection("TFE.Umbraco.AccessRestriction").Get<Config>();
+    }
+
+    public async Task InvokeAsync(HttpContext context, ILogger<IPAccessRestrictionMiddleware> logger, IIPAccessRestrictionRepository iPAccessRestrictionRepository)
+    {
+        // If Umbraco hasn't been installed yet, the middleware shouldn't do anything (interacting with the
+        // redirects service will fail as the database isn't setup yet)
+        if (_runtimeState.Level == RuntimeLevel.Install || 
+            _config.Disable || 
+            CheckClientIP(context, logger, iPAccessRestrictionRepository))
         {
-            _runtimeState = runtimeState;
-            _next = next;      
-            _config = config;
-        }       
+            await _next(context);
+            return;
+        }
+        context.Response.StatusCode = 403;
+        await context.Response.WriteAsync("You don't have permission to access / on this server.");       
+    }
 
-        public async Task InvokeAsync(HttpContext context, ILogger<IPAccessRestrictionMiddleware> logger, IIPAccessRestrictionRepository iPAccessRestrictionRepository)
+    private bool CheckClientIP(HttpContext context, ILogger<IPAccessRestrictionMiddleware> logger, IIPAccessRestrictionRepository iPAccessRestrictionRepository)
+    {
+        var proceed = true;
+
+        var requestPath = context.Request.Path;
+
+        var excludePaths = _config.ExcludePaths?.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+
+        if (excludePaths == null || !excludePaths.Any(exludePath => requestPath.StartsWithSegments(exludePath.Trim())))
         {
-            // If Umbraco hasn't been installed yet, the middleware shouldn't do anything (interacting with the
-            // redirects service will fail as the database isn't setup yet)
-            if (_runtimeState.Level == RuntimeLevel.Install)
+            var clientIp = iPAccessRestrictionRepository.GetClientIP();
+
+            proceed = !string.IsNullOrWhiteSpace(clientIp);
+
+            if (proceed)
             {
-                await _next(context);
-                return;
-            }
+                var ipWhitelist = iPAccessRestrictionRepository.GetAllIpAddresses();
 
-            var section = _config.GetSection("TFE.Umbraco.AccessRestriction");
-            var disable = section.GetValue<bool>("disable");
+                proceed = ipWhitelist.Contains(clientIp);
 
-            if (disable)
-            {
-                await _next(context);
-                return;
-            }
-
-            var configExcludePaths = section.GetValue<string>("excludePaths");
-
-            bool proceed = true;
-
-            var path = context.Request.Path;
-            var excludePaths = string.IsNullOrEmpty(configExcludePaths) ? null : configExcludePaths.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
-
-            if (excludePaths == null || excludePaths != null && !excludePaths.Any(p => path.StartsWithSegments(p.Trim())))
-            {
-                var configLocalhost = section.GetValue<string>("localhost");
-
-                var clientIp = context.Connection.RemoteIpAddress?.ToString();
-
-                clientIp = (clientIp == "::1" || clientIp == "0.0.0.1") && !string.IsNullOrWhiteSpace(configLocalhost) ? configLocalhost : clientIp;
-
-                // On Umbraco Cloud, the website is hosted behind Cloudflare, so we need to get the client IP from the headers
-                if (context.Request.Headers.ContainsKey("CF-Connecting-IP"))
-                {
-                    clientIp = context.Request.Headers["CF-Connecting-IP"].ToString();
-                }
-
-                proceed = !string.IsNullOrWhiteSpace(clientIp);
-
-                if (proceed)
-                {
-                    var publishedIps = iPAccessRestrictionRepository.GetAllIpAddresses();
-
-                    proceed = publishedIps?.Count() > 0 && publishedIps.Any(p => p == clientIp);
-                                    
-
-                    if (!proceed && (section.GetValue<bool>("logBlockedIP")))
-                        logger.LogInformation("IP {IP} blocked", clientIp);
-                }
-            }
-
-            if (!proceed)
-            {
-                context.Response.StatusCode = 403;
-                await context.Response.WriteAsync("You don't have permission to access / on this server.");
-            }
-            else if (_next != null)
-            {
-                await _next(context);
+                if (!proceed && _config.LogBlockedIP)
+                    logger.LogInformation("IP {IP} blocked", clientIp);
             }
         }
+
+        return proceed;
     }
+
+   
 }

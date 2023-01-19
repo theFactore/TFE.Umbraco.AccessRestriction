@@ -1,18 +1,17 @@
-﻿using System.Collections.Generic;
-using TFE.Umbraco.AccessRestriction.Models;
+﻿using TFE.Umbraco.AccessRestriction.Models;
 
-namespace TFE.Umbraco.AccessRestriction.Repositories
+namespace TFE.Umbraco.AccessRestriction.Repositories;
+public interface IIPAccessRestrictionRepository
 {
-    public interface IIPAccessRestrictionRepository
-    {
-		IEnumerable<IPAccessEntry> GetAll();
+    IEnumerable<IPAccessEntry> GetAll();
 
-		IEnumerable<string>? GetAllIpAddresses();
+    IEnumerable<string> GetAllIpAddresses();
 
-		IPAccessEntry GetbyId(int id);
+    IPAccessEntry GetbyId(int id);
 
-		bool Save(IPAccessEntry entry);
+    bool Save(IPAccessEntry entry);
 
-		bool Delete(int id);
-	}
+    bool Delete(int id);
+
+    string? GetClientIP();
 }

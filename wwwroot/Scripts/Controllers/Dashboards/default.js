@@ -8,13 +8,24 @@
         this.getAll();
     };
 
+    vm.getClientIP = function () {
+        $http.get(API_URL + 'GetClientIP/')
+            .then(function (response) {
+                vm.clientIP = response.data;
+            });
+    };
+
+    vm.getClientIP();
+
     vm.getAll = function () {
         $http.get(API_URL + 'GetAll/')
             .then(function (response) {
                 vm.ipEntries = response.data;
+                Update();
             });
     };
 
+    
     vm.getAll();
 
     vm.take = function (id) {
@@ -24,11 +35,12 @@
             });
     };
 
-    vm.new = function () {
+    vm.new = function (ip) {
         var options = {
             title: 'New',
             view: FORM_IPENTRY,
             size: 'small',
+            data: ip ? { ip: ip } : undefined,
             submit: function () {
                 editorService.close();
             },
@@ -87,12 +99,28 @@
                 editorService.open(options);
 
             });
-    }; 
+    };    
 
     vm.close = function () {
         if ($scope.model.close) {
             $scope.model.close();
         }
     };
+
+    function Update() {
+        var found = false;
+
+        if (vm.ipEntries && vm.clientIP) {
+            for (const entry of vm.ipEntries) {
+                console.log(entry.ip);
+                if (entry.ip == vm.clientIP) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        vm.myIpNotInList = !found;
+    }
 });
 

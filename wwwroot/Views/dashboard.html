@@ -1,12 +1,23 @@
-﻿<div class="welcome-dashboard" ng-controller="TFE.AccessRestrictionController as vm">
-    <umb-button type="button" ng-click="vm.new()" button-style="action" label="+ Add"></umb-button>
+﻿<div id="accessrestriction-dashboard" class="welcome-dashboard" ng-controller="TFE.AccessRestrictionController as vm">
+    <div class="buttons">
+        <div>
+            <umb-button type="button" ng-click="vm.new()" button-style="action" label="+ Add new IP address"></umb-button>
+        </div>
+        <div ng-show="vm.myIpNotInList">
+            <span id="icon-wrong-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M401.431 167.814l-58.757-58.76-88.029 88.026-88.028-88.026-58.76 58.76 88.026 88.027-88.026 88.024 58.76 58.768 88.028-88.031 88.029 88.031 58.757-58.768-88.027-88.024z"></path></svg>
+            </span>
+            <span>Your IP address is not on the list</span>
+            <umb-button type="button" ng-click="vm.new(vm.clientIP)" button-style="action" label="+ Add"></umb-button>
+        </div>
+    </div>    
     <div>
         <h3>Whitelisted IP Adresses</h3>
         <table class="table">
             <thead>
                 <tr>
                     <th>IP</th>
-                    <th>Description</th>                   
+                    <th>Description</th>
                     <th>Modified</th>
                     <th>Modified By</th>
                     <th></th>
@@ -15,7 +26,7 @@
             <tbody>
                 <tr ng-repeat="entry in vm.ipEntries">
                     <td>{{ entry.ip }}</td>
-                    <td>{{ entry.description }}</td>                   
+                    <td>{{ entry.description }}</td>
                     <td>{{ entry.modified | date : "mediumDate" }}</td>
                     <td>{{ entry.modifiedBy }}</td>
                     <td>
@@ -25,5 +36,5 @@
                 </tr>
             </tbody>
         </table>
-    </div> 
+    </div>
 </div>
