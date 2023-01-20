@@ -24,7 +24,7 @@ public class IPAccessRestrictionMiddleware
     {
         // If Umbraco hasn't been installed yet, the middleware shouldn't do anything (interacting with the
         // redirects service will fail as the database isn't setup yet)
-        if (_runtimeState.Level == RuntimeLevel.Install || 
+        if (_runtimeState.Level < RuntimeLevel.Run || 
             _config.Disable || 
             CheckClientIP(context, logger, iPAccessRestrictionRepository))
         {
