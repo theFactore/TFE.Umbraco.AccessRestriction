@@ -23,7 +23,7 @@ dotnet add package TFE.Umbraco.AccessRestriction --version 10.4.0.1
 or the older NuGet Package Manager:
 
 ```C#
-NuGet\Install-Package TFE.Umbraco.AccessRestriction -Version 10.4.0.1
+NuGet\Install-Package TFE.Umbraco.AccessRestriction --version 10.4.0.1
 ```
 
 ## Umbraco Installation
