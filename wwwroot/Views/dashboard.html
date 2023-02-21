@@ -3,6 +3,13 @@
         <div>
             <umb-button type="button" ng-click="vm.new()" button-style="action" label="+ Add new IP address"></umb-button>
         </div>
+        <div ng-show="vm.headerInfo">
+            <span id="icon-wrong-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width: 40px!important; height: 40px!important; fill: orange;">
+                <path d="M255.399 66.934L36.38 444.893h438.036L255.399 66.934zm22.094 331.988h-46.29v-44.743h46.29v44.743zm-11.458-63.166h-23.068l-12.849-106.419v-57.846h48.458v57.846l-12.541 106.419z"></path></svg>
+            </span>
+            <span ng-bind="vm.headerInfo"></span>
+        </div>
         <div ng-show="vm.myIpNotInList">
             <span id="icon-wrong-container">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M401.431 167.814l-58.757-58.76-88.029 88.026-88.028-88.026-58.76 58.76 88.026 88.027-88.026 88.024 58.76 58.768 88.028-88.031 88.029 88.031 58.757-58.768-88.027-88.024z"></path></svg>

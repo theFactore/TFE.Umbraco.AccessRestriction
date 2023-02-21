@@ -13,7 +13,9 @@
                 <umb-box-content>
                     <ng-form name="ipEntry" class="show-validation">
                         <input type="hidden" name="Id" ng-model="model.data.id" />
-
+                        <small class="control-description">A wildcard is only allowed at the end. When using a wildcard, the entry is no longer checked for a valid IP address. Example: 127.0.* or 127.0.0*</small>
+                        <br />
+                        <br />
                         <umb-control-group label="IP" label-for="IpAddress" required="true">
                             <input type="text" placeholder="192.168.1.1" name="IpAddress" ng-model="model.data.ip" umb-auto-focus required ipformat />
                             <span ng-messages="ipEntry.IpAddress.$error" ng-show="ipEntry.IpAddress.$dirty" show-validation-on-submit>
@@ -31,7 +33,7 @@
 
                         <umb-button button-style="success"
                                     label="Save"
-                                    name="Save"                                    
+                                    name="Save"
                                     disabled="!ipEntry.$valid"
                                     ng-click="ipEntry.$valid && vm.save(model.data.id, model.data.ip, model.data.description)">
                         </umb-button>

@@ -9,4 +9,8 @@ public class Config
     public string? ExcludePaths { get; set; }
 
     public string? LocalHost { get; set; }
+
+    public bool isCloudflare { get; set; }
+
+    public string? customHeader { get; set; }
 }

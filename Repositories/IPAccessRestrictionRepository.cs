@@ -13,154 +13,171 @@ using Umbraco.Extensions;
 namespace TFE.Umbraco.AccessRestriction.Repositories;
 public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 {
-    private readonly IScopeProvider _scopeProvider;
-    private readonly IOptionsSnapshot<CookieAuthenticationOptions> _cookieOptionsSnapshot;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IAppPolicyCache globalCache;
-    private readonly Config _config;
+	private readonly IScopeProvider _scopeProvider;
+	private readonly IOptionsSnapshot<CookieAuthenticationOptions> _cookieOptionsSnapshot;
+	private readonly IHttpContextAccessor _httpContextAccessor;
+	private readonly IAppPolicyCache globalCache;
+	private readonly Config _config;
 
-    public IPAccessRestrictionRepository(
-        IScopeProvider scopeProvider,
-        IOptionsSnapshot<CookieAuthenticationOptions> cookieOptionsSnapshot,
-        IHttpContextAccessor httpContextAccessor, AppCaches appCaches, IConfiguration config)
-    {
-        _scopeProvider = scopeProvider;
-        _cookieOptionsSnapshot = cookieOptionsSnapshot;
-        _httpContextAccessor = httpContextAccessor;
+	public IPAccessRestrictionRepository(
+		IScopeProvider scopeProvider,
+		IOptionsSnapshot<CookieAuthenticationOptions> cookieOptionsSnapshot,
+		IHttpContextAccessor httpContextAccessor, 
+		AppCaches appCaches, 
+		IConfiguration config)
+	{
+		_scopeProvider = scopeProvider;
+		_cookieOptionsSnapshot = cookieOptionsSnapshot;
+		_httpContextAccessor = httpContextAccessor;
 
-        globalCache = appCaches.IsolatedCaches.GetOrCreate(typeof(IPAccessRestrictionRepository));
+		globalCache = appCaches.IsolatedCaches.GetOrCreate(typeof(IPAccessRestrictionRepository));
 
-        _config = config.GetSection("TFE.Umbraco.AccessRestriction").Get<Config>();
-    } 
+		_config = config.GetSection("TFE.Umbraco.AccessRestriction").Get<Config>();	
+	}
 
-    public string? GetClientIP()
-    {
-        var context = _httpContextAccessor.HttpContext;
+	public string? GetClientIP()
+	{
+		var context = _httpContextAccessor.HttpContext;
 
-        if (context == null)
-        {
-            return null;
-        }
+		if (context == null)
+		{
+			return null;
+		}
 
-        var clientIp = context.Connection.RemoteIpAddress?.ToString();
-        clientIp = (clientIp == "::1" || clientIp == "0.0.0.1") && !string.IsNullOrWhiteSpace(_config.LocalHost) ? _config.LocalHost : clientIp;
+		var clientIp = context.Connection.RemoteIpAddress?.ToString();
+		clientIp = (clientIp == "::1" || clientIp == "0.0.0.1") && !string.IsNullOrWhiteSpace(_config.LocalHost) ? _config.LocalHost : clientIp;
 
-        // On Umbraco Cloud, the website is hosted behind Cloudflare, so we need to get the client IP from the headers
-        if (context.Request.Headers.ContainsKey("CF-Connecting-IP"))
-        {
-            clientIp = context.Request.Headers["CF-Connecting-IP"].ToString();
-        }
+		// On Umbraco Cloud, the website is hosted behind Cloudflare, so we need to get the client IP from the headers
+		// If the website is hosted behind a proxy to retreive clients IP you can use this cuts
 
-        return clientIp;
-    }
+		string? headerKey = _config.isCloudflare ? "CF-Connecting-IP" : _config.customHeader;
+		if (!string.IsNullOrWhiteSpace(headerKey) && context.Request.Headers.ContainsKey(headerKey))
+		{
+			clientIp = context.Request.Headers[headerKey].ToString();
+		}		
 
-    public bool Delete(int id)
-    {
-        var entry = GetbyId(id);
+		return clientIp;
+	}
 
-        if (entry == null)
-        {
-            return true;
-        }
+	public bool Delete(int id)
+	{
+		var entry = GetbyId(id);
 
-        entry.IsDeleted = true;
+		if (entry == null)
+		{
+			return true;
+		}
 
-        return Save(entry);
-    }
+		entry.IsDeleted = true;
 
-    public IEnumerable<IPAccessEntry> GetAll()
-    {
-        using var scope = _scopeProvider.CreateScope();
+		return Save(entry);
+	}
 
-        var sql = scope.SqlContext.Sql().Select("*").From<IPAccessEntry>().Where<IPAccessEntry>(x => !x.IsDeleted);
+	public IEnumerable<IPAccessEntry> GetAll()
+	{
+		using var scope = _scopeProvider.CreateScope();
 
-        return scope.Database.Fetch<IPAccessEntry>(sql);
-    }
+		var sql = scope.SqlContext.Sql().Select("*").From<IPAccessEntry>().Where<IPAccessEntry>(x => !x.IsDeleted);
 
-    public IEnumerable<string> GetAllIpAddresses()
-    {
-        var result = globalCache.Get("GetAllIpAddresses", () =>
-        {
-            using var scope = _scopeProvider.CreateScope(autoComplete: true);
+		return scope.Database.Fetch<IPAccessEntry>(sql);
+	}
 
-            var sql = scope.SqlContext.Sql().Select<IPAccessEntry>(x => x.Ip).From<IPAccessEntry>().Where<IPAccessEntry>(x => !x.IsDeleted);
+	public IEnumerable<string> GetAllIpAddresses()
+	{
+		var result = globalCache.Get("GetAllIpAddresses", () =>
+		{
+			using var scope = _scopeProvider.CreateScope(autoComplete: true);
 
-            var result = scope.Database.Fetch<IPAccessEntry>(sql);
+			var sql = scope.SqlContext.Sql().Select<IPAccessEntry>(x => x.Ip).From<IPAccessEntry>().Where<IPAccessEntry>(x => !x.IsDeleted);
 
-            return from r in result where !string.IsNullOrWhiteSpace(r.Ip) select r.Ip;
-        }) as IEnumerable<string>;
+			var result = scope.Database.Fetch<IPAccessEntry>(sql);
 
-        return result ?? Enumerable.Empty<string>();
-    }
+			return from r in result where !string.IsNullOrWhiteSpace(r.Ip) select r.Ip;
+		}) as IEnumerable<string>;
 
-    public IPAccessEntry GetbyId(int id)
-    {
-        using var scope = _scopeProvider.CreateScope(autoComplete: true);
+		return result ?? Enumerable.Empty<string>();
+	}
 
-        var sql = scope.SqlContext.Sql().Select("*").From(Constants.DatabaseSchema.Tables.IpAccessEntries).Where<IPAccessEntry>(x => x.Id == id);
+	public IPAccessEntry GetbyId(int id)
+	{
+		using var scope = _scopeProvider.CreateScope(autoComplete: true);
 
-        return scope.Database.SingleOrDefault<IPAccessEntry>(sql);
-    }
+		var sql = scope.SqlContext.Sql().Select("*").From(Constants.DatabaseSchema.Tables.IpAccessEntries).Where<IPAccessEntry>(x => x.Id == id);
 
-    public bool Save(IPAccessEntry entry)
-    {
-        if (entry == null)
-        {
-            throw new ArgumentNullException(nameof(entry));
-        }
+		return scope.Database.SingleOrDefault<IPAccessEntry>(sql);
+	}
 
-        entry.ModifiedBy = CurrentUser;
-        entry.Modified = DateTime.Now;
+	public bool Save(IPAccessEntry entry)
+	{
+		if (entry == null)
+		{
+			throw new ArgumentNullException(nameof(entry));
+		}
 
-        using var scope = _scopeProvider.CreateScope(autoComplete: true);
+		entry.ModifiedBy = CurrentUser;
+		entry.Modified = DateTime.Now;
 
-        if (entry.Id == default)
-        {
-            entry.CreatedBy = entry.ModifiedBy;
-            entry.Created = entry.Modified;
+		using var scope = _scopeProvider.CreateScope(autoComplete: true);
 
-
-            scope.Database.Insert(entry);
-        }
-        else
-        {
-            scope.Database.Update(entry, x => new { x.Id, x.Ip, x.Description, x.Modified, x.ModifiedBy, x.IsDeleted });
-        }
-
-        globalCache.ClearByKey("GetAllIpAddresses");
-
-        return true;
-    }
-
-    private string? CurrentUser
-    {
-        get
-        {
-            var httpContext = _httpContextAccessor.HttpContext;
-
-            if (httpContext == null)
-                throw new InvalidOperationException($"No httpContext available");
+		if (entry.Id == default)
+		{
+			entry.CreatedBy = entry.ModifiedBy;
+			entry.Created = entry.Modified;
 
 
-            var cookieOptions = _cookieOptionsSnapshot.Get(global::Umbraco.Cms.Core.Constants.Security.BackOfficeAuthenticationType);
+			scope.Database.Insert(entry);
+		}
+		else
+		{
+			scope.Database.Update(entry, x => new { x.Id, x.Ip, x.Description, x.Modified, x.ModifiedBy, x.IsDeleted });
+		}
 
-            if (cookieOptions == null)
-            {
-                throw new InvalidOperationException($"No cookie options found with name {(global::Umbraco.Cms.Core.Constants.Security.BackOfficeAuthenticationType)}");
-            }
+		globalCache.ClearByKey("GetAllIpAddresses");
 
-            if (cookieOptions.Cookie.Name is not null && httpContext.Request.Cookies.TryGetValue(cookieOptions.Cookie.Name, out var cookie))
-            {
-                AuthenticationTicket? unprotected = cookieOptions.TicketDataFormat.Unprotect(cookie);
-                ClaimsIdentity? backOfficeIdentity = unprotected?.Principal.GetUmbracoIdentity();
+		return true;
+	}
 
-                if (backOfficeIdentity != null && backOfficeIdentity.Name.HasValue())
-                {
-                    return backOfficeIdentity?.Name;
-                }
-            }
+	public string GetHeaderInfo()
+	{
+		if (_config.isCloudflare && !string.IsNullOrWhiteSpace(_config.customHeader))
+			return "Attention: Please choose Cloudflare or a custom header";
+		else if (_config.isCloudflare)
+			return "Attention: Cloudflare configuration is active";
+		else if (!string.IsNullOrWhiteSpace(_config.customHeader))
+			return $"Attention: Using custom header {_config.customHeader}";
+		else
+			return "";
+	}
 
-            throw new InvalidOperationException($"No backoffice user available");
-        }
-    }
+	private string? CurrentUser
+	{
+		get
+		{
+			var httpContext = _httpContextAccessor.HttpContext;
+
+			if (httpContext == null)
+				throw new InvalidOperationException($"No httpContext available");
+
+
+			var cookieOptions = _cookieOptionsSnapshot.Get(global::Umbraco.Cms.Core.Constants.Security.BackOfficeAuthenticationType);
+
+			if (cookieOptions == null)
+			{
+				throw new InvalidOperationException($"No cookie options found with name {(global::Umbraco.Cms.Core.Constants.Security.BackOfficeAuthenticationType)}");
+			}
+
+			if (cookieOptions.Cookie.Name is not null && httpContext.Request.Cookies.TryGetValue(cookieOptions.Cookie.Name, out var cookie))
+			{
+				AuthenticationTicket? unprotected = cookieOptions.TicketDataFormat.Unprotect(cookie);
+				ClaimsIdentity? backOfficeIdentity = unprotected?.Principal.GetUmbracoIdentity();
+
+				if (backOfficeIdentity != null && backOfficeIdentity.Name.HasValue())
+				{
+					return backOfficeIdentity?.Name;
+				}
+			}
+
+			throw new InvalidOperationException($"No backoffice user available");
+		}
+	}
 }

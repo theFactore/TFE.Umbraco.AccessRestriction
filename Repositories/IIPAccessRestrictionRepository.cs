@@ -14,4 +14,6 @@ public interface IIPAccessRestrictionRepository
     bool Delete(int id);
 
     string? GetClientIP();
+
+    string GetHeaderInfo();
 }

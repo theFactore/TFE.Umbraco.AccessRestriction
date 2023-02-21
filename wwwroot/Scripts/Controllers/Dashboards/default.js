@@ -4,6 +4,15 @@
     const API_URL = '/umbraco/backoffice/TFE/IPAccessRestriction/';
     const FORM_IPENTRY = '/App_Plugins/TFE.Umbraco.AccessRestriction/Views/Dialogs/ipEntryForm.html';
 
+    vm.getHeaderInfo = function () {
+        $http.get(API_URL + 'GetHeaderInfo/')
+            .then(function (response) {
+                vm.headerInfo = response.data;
+            });
+    };
+
+    vm.getHeaderInfo();
+
     vm.refresh = function () {
         this.getAll();
     };

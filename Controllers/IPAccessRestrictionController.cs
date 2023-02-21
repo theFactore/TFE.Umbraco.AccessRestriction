@@ -60,4 +60,10 @@ public class IPAccessRestrictionController : UmbracoAuthorizedJsonController
     {
         return new JsonResult(_iPAccessRestrictionRepository.Delete(id));
     }
+
+	[HttpGet]
+	public ActionResult GetHeaderInfo()
+	{
+		return new JsonResult(_iPAccessRestrictionRepository.GetHeaderInfo());
+	}
 }

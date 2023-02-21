@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<StaticWebAssetBasePath>App_Plugins/TFE.Umbraco.AccessRestriction</StaticWebAssetBasePath>
 	</PropertyGroup>
 
@@ -30,17 +30,21 @@
 
 	 <!--Include NuGet dependencies-->
 	<ItemGroup>
-		<PackageReference Include="Umbraco.Cms.Web.Website" Version="10.4.0" />
-		<PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="10.4.0" />
+		<PackageReference Include="Umbraco.Cms.Web.Website" Version="11.1.0" />
+		<PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="11.1.0" />
 	</ItemGroup>
 
 	 <!--Include NuGet dependencies -->
 	<ItemGroup>
+		<Compile Remove="TFE.Umbraco.AccessRestriction.Tests\**" />
+		<Content Remove="TFE.Umbraco.AccessRestriction.Tests\**" />
 		<Content Remove="wwwroot\**\*" />
 		<Content Include="wwwroot\**\*.css" />
 		<Content Include="wwwroot\**\*.html" />
 		<Content Include="wwwroot\**\*.js" />
 		<Content Include="wwwroot\Lang\*.xml" />
+		<EmbeddedResource Remove="TFE.Umbraco.AccessRestriction.Tests\**" />
+		<None Remove="TFE.Umbraco.AccessRestriction.Tests\**" />
 		<AdditionalFiles Include="..\TFE.Umbraco.AccessRestriction.TestWeb\.sonarlint\umbracopackageaccessrestriction\CSharp\SonarLint.xml" Link="SonarLint.xml" />
 		<Content Include="LICENSE.md" />
 		<Content Include="README.md" />
