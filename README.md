@@ -10,11 +10,11 @@
 
 |License:|Umbraco:|Target Framework:|
 |--------|--------|-----------------|
-|[MIT License](./LICENSE.md "MIT License")|Umbraco 10|.NET 6|
+|[MIT License](./LICENSE.md "MIT License")|Umbraco 11|.NET 7|
 
 ## Package Installation
 
-The Umbraco 10 version of this package is only available via [NuGet](https://www.nuget.org/packages/TFE.Umbraco.AccessRestriction). To install the package, you can use either .NET CLI:
+The Umbraco 11 version of this package is only available via [NuGet](https://www.nuget.org/packages/TFE.Umbraco.AccessRestriction). To install the package, you can use either .NET CLI:
 
 ```C#
 dotnet add package TFE.Umbraco.AccessRestriction --version 10.4.0.1
@@ -46,20 +46,32 @@ Add these settings to appsettings.json
 "TFE.Umbraco.AccessRestriction": {
     "disable": true, 
     "logBlockedIP": false,
-    "excludePaths": "/umbraco, /App_Plugins",
-    "localHost": "127.0.0.1"
+    "localHost": "127.0.0.1", 
+    "excludePaths": "/umbraco, /App_Plugins, /api/keepalive/ping",
+    "isCloudFlare": false,
+    "customHeader": ""
   }
 ``` 
 ### Azure / CloudFlare  / Umbraco Cloud Installation
->When installed on a cloud environment make sure to add your the cloud IP Addresses. Replace the following excludePaths property in appsettings.json :
+When installed on a cloud environment make sure to add your the cloud IP Addresses. 
+Replace the following excludePaths property in appsettings.json :
 ```C#
- "excludePaths": "/umbraco, /App_Plugins, /umbraco-signin-oidc, /sb", 
+"excludePaths": "/umbraco, /App_Plugins, /api/keepalive/ping, /umbraco-signin-oidc, /sb", 
+```
+Set to true when using Cloudflare
+```C#
+"isCloudFlare": true,
+```
+If a proxy is being used, set the value of the 'customHeader' field to 'header' with the IP address used by the proxy.
+```C#
+"customHeader": "",
 ```
 ## Features
 
 - Global dashboard for listing all whitelisted IP addresses.
 - Package only handles IP addresses added manually by a user with admin rights.
 - logBlockedIP enables you to see all blocked IP addresses in the Umbraco log.
+- Use * as wildcard to add a range of IP addresses e.g. "192.168.1.*"
 
 ## Contribution guidelines
 
