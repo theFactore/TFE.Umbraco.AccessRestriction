@@ -8,9 +8,11 @@ public class Config
 
     public string? ExcludePaths { get; set; }
 
+    public string? IncludePaths { get; set; }
+
     public string? LocalHost { get; set; }
 
-    public bool isCloudflare { get; set; }
+    public bool IsCloudflare { get; set; }
 
-    public string? customHeader { get; set; }
+    public string? CustomHeader { get; set; }
 }

@@ -33,7 +33,7 @@ public class Helper
                 continue;
             }
             var listIP = ip.ToLower();
-            if(listIP.EndsWith("*"))
+            if(listIP.EndsWith('*'))
             {
 
             listIP = listIP[..^1];
