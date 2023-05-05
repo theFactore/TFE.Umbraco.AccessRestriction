@@ -12,7 +12,7 @@ public class IPAccessRestrictionMiddleware
 {
 	private readonly IRuntimeState _runtimeState;
 	private readonly RequestDelegate _next;
-	private readonly Config _config;
+	private readonly Config? _config;
 
 	public IPAccessRestrictionMiddleware(IRuntimeState runtimeState, RequestDelegate next, IConfiguration config)
 	{
@@ -26,7 +26,7 @@ public class IPAccessRestrictionMiddleware
 		// If Umbraco hasn't been installed yet, the middleware shouldn't do anything (interacting with the
 		// redirects service will fail as the database isn't setup yet)
 		if (_runtimeState.Level < RuntimeLevel.Run ||
-			_config.Disable ||
+			_config!.Disable ||
 			CheckClientIP(context, logger, iPAccessRestrictionRepository))
 		{
 			await _next(context);
@@ -42,7 +42,7 @@ public class IPAccessRestrictionMiddleware
 
 		var requestPath = context.Request.Path;
 
-		var excludePaths = _config.ExcludePaths?.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+		var excludePaths = _config?.ExcludePaths?.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
 
 		if (excludePaths == null || !excludePaths.Any(exludePath => requestPath.StartsWithSegments(exludePath.Trim())))
 		{
@@ -54,7 +54,7 @@ public class IPAccessRestrictionMiddleware
 
 				proceed = Helper.IsWhitelisted(ipWhitelist, clientIp);
 
-				if (!proceed && _config.LogBlockedIP)
+				if (!proceed && _config!.LogBlockedIP)
 					logger.LogInformation("IP {IP} blocked", clientIp);
 			}
 			else

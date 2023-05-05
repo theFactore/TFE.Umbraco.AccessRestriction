@@ -17,7 +17,7 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 	private readonly IOptionsSnapshot<CookieAuthenticationOptions> _cookieOptionsSnapshot;
 	private readonly IHttpContextAccessor _httpContextAccessor;
 	private readonly IAppPolicyCache globalCache;
-	private readonly Config _config;
+	private readonly Config? _config;
 
 	public IPAccessRestrictionRepository(
 		IScopeProvider scopeProvider,
@@ -45,12 +45,12 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 		}
 
 		var clientIp = context.Connection.RemoteIpAddress?.ToString();
-		clientIp = (clientIp == "::1" || clientIp == "0.0.0.1") && !string.IsNullOrWhiteSpace(_config.LocalHost) ? _config.LocalHost : clientIp;
+		clientIp = (clientIp == "::1" || clientIp == "0.0.0.1") && !string.IsNullOrWhiteSpace(_config?.LocalHost) ? _config.LocalHost : clientIp;
 
 		// On Umbraco Cloud, the website is hosted behind Cloudflare, so we need to get the client IP from the headers
 		// If the website is hosted behind a proxy to retreive clients IP you can use this cuts
 
-		string? headerKey = _config.isCloudflare ? "CF-Connecting-IP" : _config.customHeader;
+		string? headerKey = _config!.isCloudflare ? "CF-Connecting-IP" : _config?.customHeader;
 		if (!string.IsNullOrWhiteSpace(headerKey) && context.Request.Headers.ContainsKey(headerKey))
 		{
 			clientIp = context.Request.Headers[headerKey].ToString();
