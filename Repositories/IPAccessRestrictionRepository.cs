@@ -139,12 +139,12 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 
 	public string GetHeaderInfo()
 	{
-		if (_config.isCloudflare && !string.IsNullOrWhiteSpace(_config.customHeader))
+		if (_config!.isCloudflare && !string.IsNullOrWhiteSpace(_config.customHeader))
 			return "Attention: Please choose Cloudflare or a custom header";
 		else if (_config.isCloudflare)
 			return "Attention: Cloudflare configuration is active";
-		else if (!string.IsNullOrWhiteSpace(_config.customHeader))
-			return $"Attention: Using custom header {_config.customHeader}";
+		else if (!string.IsNullOrWhiteSpace(_config?.customHeader))
+			return $"Attention: Using custom header {_config?.customHeader}";
 		else
 			return "";
 	}
