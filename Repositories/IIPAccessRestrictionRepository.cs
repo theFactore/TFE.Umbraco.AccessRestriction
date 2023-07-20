@@ -16,4 +16,6 @@ public interface IIPAccessRestrictionRepository
     string? GetClientIP();
 
     string GetHeaderInfo();
+
+    string CheckIpWhitelistFile();
 }

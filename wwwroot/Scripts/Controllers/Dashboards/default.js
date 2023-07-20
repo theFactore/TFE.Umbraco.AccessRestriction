@@ -13,6 +13,15 @@
 
     vm.getHeaderInfo();
 
+    vm.checkIpWhitelistFile = function () {
+        $http.get(API_URL + 'CheckIpWhitelistFile/')
+            .then(function (response) {
+                vm.checkIpWhitelistFile = response.data;
+            });
+    };
+
+    vm.checkIpWhitelistFile();
+
     vm.refresh = function () {
         this.getAll();
     };
@@ -34,7 +43,7 @@
             });
     };
 
-    
+
     vm.getAll();
 
     vm.take = function (id) {
@@ -87,7 +96,7 @@
             });
     };
 
-    vm.open = function (id) {   
+    vm.open = function (id) {
 
         var options = {
             title: "Edit",
@@ -108,7 +117,7 @@
                 editorService.open(options);
 
             });
-    };    
+    };
 
     vm.close = function () {
         if ($scope.model.close) {

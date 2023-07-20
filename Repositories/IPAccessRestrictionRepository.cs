@@ -105,7 +105,7 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 
         return result ?? Enumerable.Empty<string>();
     }
-   
+
     public IPAccessEntry GetbyId(int id)
     {
         using var scope = _scopeProvider.CreateScope(autoComplete: true);
@@ -183,7 +183,13 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 
         return ipsFromFile;
     }
-
+    public string CheckIpWhitelistFile()
+    {
+        if (ipsFromFile.Any())
+            return "Attention: Secondary IP whitelist in use";
+        else
+            return "";
+    }
 
     private string? CurrentUser
     {
