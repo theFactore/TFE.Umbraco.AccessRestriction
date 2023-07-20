@@ -10,20 +10,20 @@
 
 |License:|Umbraco:|Target Framework:|
 |--------|--------|-----------------|
-|[MIT License](./LICENSE.md "MIT License")|Umbraco 11|.NET 7|
+|[MIT License](./LICENSE.md "MIT License")|Umbraco 12|.NET 7|
 
 ## Package Installation
 
-The Umbraco 11 version of this package is only available via [NuGet](https://www.nuget.org/packages/TFE.Umbraco.AccessRestriction). To install the package, you can use either .NET CLI:
+The Umbraco 12 version of this package is only available via [NuGet](https://www.nuget.org/packages/TFE.Umbraco.AccessRestriction). To install the package, you can use either .NET CLI:
 
 ```C#
-dotnet add package TFE.Umbraco.AccessRestriction --version 11.3.1
+dotnet add package TFE.Umbraco.AccessRestriction --version 12.0.1
 ```
 
 or the older NuGet Package Manager:
 
 ```C#
-NuGet\Install-Package TFE.Umbraco.AccessRestriction --version 11.3.1
+NuGet\Install-Package TFE.Umbraco.AccessRestriction --version 12.0.1
 ```
 
 ## Umbraco Installation
@@ -48,30 +48,66 @@ Add these settings to appsettings.json
     "logBlockedIP": false,
     "localHost": "127.0.0.1", 
     "excludePaths": "/umbraco, /App_Plugins, /api/keepalive/ping",
+    "includePaths": "", 
     "isCloudFlare": false,
     "customHeader": ""
   }
-``` 
+```
+
+Either use "excludePaths" or "includePaths" to direct the IP blocker.
+
 ### Azure / CloudFlare  / Umbraco Cloud Installation
+
 When installed on a cloud environment make sure to add your the cloud IP Addresses. 
 Replace the following excludePaths property in appsettings.json :
+
 ```C#
 "excludePaths": "/umbraco, /App_Plugins, /api/keepalive/ping, /umbraco-signin-oidc, /sb", 
 ```
+
 Set to true when using Cloudflare
+
 ```C#
 "isCloudFlare": true,
 ```
+
 If a proxy is being used, set the value of the 'customHeader' field to 'header' with the IP address used by the proxy.
+
 ```C#
 "customHeader": "",
 ```
+
+## Whitelist IP Addresses
+
+There are two different ways to whitelist an IP address, though the dashboard interface and by adding the IP address to WhitelistedIps.txt. Both methods can be used simultaneously and separately.
+
+### Add an IP using the Umbraco dashboard
+
+![Add an IP to the whitelist](Add_whitelisted_IP.gif)
+
+### Add an IP using WhitelistedIps.txt
+
+Add WhitelistedIps.txt to the root of your Umbraco project.
+
+![Add an IP to the whitelist txt file](Add_whitelisted_IP_via_txt_file.png)
+
+IP Addresses must be line separated and to add a comment use the #.
+
+```C#
+192.168.1.1 
+192.168.1.2 #John
+192.168.1.3
+::1 
+192.168.1.4 #Hank  
+```
+
 ## Features
 
 - Global dashboard for listing all whitelisted IP addresses.
-- Package only handles IP addresses added manually by a user with admin rights.
+- Package handles IP addresses added manually by a user with admin rights and IP addresses added to the WhitelistedIps.txt.
 - logBlockedIP enables you to see all blocked IP addresses in the Umbraco log.
-- Use * as wildcard to add a range of IP addresses e.g. "192.168.1.*"
+- Use *as wildcard to add a range of IP addresses e.g. "192.168.1.*"
+- Include or exclude paths from being blocked.
 
 ## Contribution guidelines
 

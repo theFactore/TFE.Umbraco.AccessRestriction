@@ -16,7 +16,7 @@
 		<Product>TFE.Umbraco.AccessRestriction</Product>
 		<Title>TFE.Umbraco.AccessRestriction</Title>
 		<Description>IP access restriction manager for Umbraco CMS </Description>
-		<Version>11.3.1</Version>
+		<Version>12.0.1</Version>
 		<Authors>Rutger Dijkstra</Authors>
 		<PackageTags>Umbraco, Plugin, Package, Access restriction, Ip Whitelist, Ip Blacklist, Umbraco-Marketplace, TFE, theFactor.e</PackageTags>
 		<PackageProjectUrl></PackageProjectUrl>
@@ -30,8 +30,8 @@
 
 	 <!--Include NuGet dependencies-->
 	<ItemGroup>
-		<PackageReference Include="Umbraco.Cms.Web.Website" Version="11.3.1" />
-		<PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="11.3.1" />
+		<PackageReference Include="Umbraco.Cms.Web.Website" Version="12.0.1" />
+		<PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="12.0.1" />
 	</ItemGroup>
 
 	 <!--Include NuGet dependencies -->
