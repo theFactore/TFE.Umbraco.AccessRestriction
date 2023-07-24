@@ -185,6 +185,11 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
     }
     public string CheckIpWhitelistFile()
     {
+        if(ipsFromFile == null)
+        {
+            GetIpAddressesFromTxtFile(_env.ContentRootPath);
+        }
+        
         if (ipsFromFile.Any())
             return "Attention: Secondary IP whitelist in use";
         else
