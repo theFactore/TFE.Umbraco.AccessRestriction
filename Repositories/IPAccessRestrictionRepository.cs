@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using StackExchange.Profiling.Internal;
-using System.Linq;
 using System.Security.Claims;
 using TFE.Umbraco.AccessRestriction.Models;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Extensions;
+using Serilog;
 
 namespace TFE.Umbraco.AccessRestriction.Repositories;
 public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
@@ -29,7 +29,8 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
         IOptionsSnapshot<CookieAuthenticationOptions> cookieOptionsSnapshot,
         IHttpContextAccessor httpContextAccessor,
         AppCaches appCaches,
-        IConfiguration config, IWebHostEnvironment webHostEnvironment)
+        IConfiguration config, 
+        IWebHostEnvironment webHostEnvironment)
     {
         _scopeProvider = scopeProvider;
         _cookieOptionsSnapshot = cookieOptionsSnapshot;
@@ -100,7 +101,15 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 
             var ipsFromDatabase = from r in result where !string.IsNullOrWhiteSpace(r.Ip) select r.Ip;
 
-            return ipsFromDatabase.Concat(GetIpAddressesFromTxtFile(_env.ContentRootPath));
+            var ipsFromTxtFile = GetIpAddressesFromTxtFile(_env.ContentRootPath);
+           
+            if (ipsFromDatabase.Any())
+            {
+                return ipsFromDatabase.Concat(ipsFromTxtFile);
+            }
+            
+            return ipsFromDatabase;
+
         }) as IEnumerable<string>;
 
         return result ?? Enumerable.Empty<string>();
@@ -165,9 +174,9 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
         }
 
         var processedLines = new List<string>();
-
-        using (StreamReader reader = new(Path.Combine(path, "WhitelistedIps.txt")))
+        try
         {
+            using StreamReader reader = new(Path.Combine(path, "WhitelistedIps.txt"));
             while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine()?.Split(new[] { "#", "," }, StringSplitOptions.RemoveEmptyEntries);
@@ -177,6 +186,10 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
                     processedLines.Add(line[0].Trim());
                 }
             }
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "WhitelistedIps.txt file cannot be found");
         }
 
         ipsFromFile = processedLines ?? Enumerable.Empty<string>();

@@ -17,13 +17,13 @@
 The Umbraco 12 version of this package is only available via [NuGet](https://www.nuget.org/packages/TFE.Umbraco.AccessRestriction). To install the package, you can use either .NET CLI:
 
 ```C#
-dotnet add package TFE.Umbraco.AccessRestriction --version 12.0.1
+dotnet add package TFE.Umbraco.AccessRestriction --version 12.0.1.1
 ```
 
 or the older NuGet Package Manager:
 
 ```C#
-NuGet\Install-Package TFE.Umbraco.AccessRestriction --version 12.0.1
+NuGet\Install-Package TFE.Umbraco.AccessRestriction --version 12.0.1.1
 ```
 
 ## Umbraco Installation

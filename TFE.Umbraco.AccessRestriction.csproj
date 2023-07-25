@@ -16,7 +16,7 @@
 		<Product>TFE.Umbraco.AccessRestriction</Product>
 		<Title>TFE.Umbraco.AccessRestriction</Title>
 		<Description>IP access restriction manager for Umbraco CMS </Description>
-		<Version>12.0.1</Version>
+		<Version>12.0.1.1</Version>
 		<Authors>Rutger Dijkstra</Authors>
 		<PackageTags>Umbraco, Plugin, Package, Access restriction, Ip Whitelist, Ip Blacklist, Umbraco-Marketplace, TFE, theFactor.e</PackageTags>
 		<PackageProjectUrl></PackageProjectUrl>
@@ -45,7 +45,7 @@
 		<Content Include="wwwroot\Lang\*.xml" />
 		<EmbeddedResource Remove="TFE.Umbraco.AccessRestriction.Tests\**" />
 		<None Remove="TFE.Umbraco.AccessRestriction.Tests\**" />
-		<AdditionalFiles Include="..\TFE.Umbraco.AccessRestriction.TestWeb\.sonarlint\umbracopackageaccessrestriction\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+		<None Include="..\TFE.Umbraco.AccessRestriction.TestWeb\.sonarlint\umbracopackageaccessrestriction\CSharp\SonarLint.xml" Link="SonarLint.xml" />
 		<Content Include="LICENSE.md" />
 		<Content Include="README.md" />
 		<Content Include="TFE.Umbraco.AccessRestriction.Icon.png" />
