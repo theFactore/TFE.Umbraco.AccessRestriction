@@ -11,6 +11,7 @@ using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Extensions;
 using Serilog;
+using TFE.Umbraco.AccessRestriction.Exceptions;
 
 namespace TFE.Umbraco.AccessRestriction.Repositories;
 public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
@@ -19,7 +20,7 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
     private readonly IOptionsSnapshot<CookieAuthenticationOptions> _cookieOptionsSnapshot;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAppPolicyCache globalCache;
-    private readonly Config? _config;
+    private readonly Config _config;
     private readonly IWebHostEnvironment _env;
 
     private static IEnumerable<string>? ipsFromFile = null;
@@ -39,7 +40,7 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 
         globalCache = appCaches.IsolatedCaches.GetOrCreate(typeof(IPAccessRestrictionRepository));
 
-        _config = config.GetSection("TFE.Umbraco.AccessRestriction").Get<Config>();
+        _config = config.GetRequiredSection("TFE.Umbraco.AccessRestriction").Get<Config>() ?? throw new ConfigurationException("AccessRestriction package is not properly configured");
     }
 
     public string? GetClientIP()
@@ -52,12 +53,12 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
         }
 
         var clientIp = context.Connection.RemoteIpAddress?.ToString();
-        clientIp = (clientIp == "::1" || clientIp == "0.0.0.1") && !string.IsNullOrWhiteSpace(_config?.LocalHost) ? _config.LocalHost : clientIp;
+        clientIp = (clientIp == "::1" || clientIp == "0.0.0.1") && !string.IsNullOrWhiteSpace(_config.LocalHost) ? _config.LocalHost : clientIp;
 
         // On Umbraco Cloud, the website is hosted behind Cloudflare, so we need to get the client IP from the headers
         // If the website is hosted behind a proxy to retreive clients IP you can use this cuts
 
-        string? headerKey = _config!.IsCloudflare ? "CF-Connecting-IP" : _config?.CustomHeader;
+        string? headerKey = _config.IsCloudflare ? "CF-Connecting-IP" : _config.CustomHeader;
         if (!string.IsNullOrWhiteSpace(headerKey) && context.Request.Headers.ContainsKey(headerKey))
         {
             clientIp = context.Request.Headers[headerKey].ToString();
@@ -103,7 +104,7 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 
             var ipsFromTxtFile = GetIpAddressesFromTxtFile(_env.ContentRootPath);
            
-            if (ipsFromDatabase.Any())
+            if (ipsFromTxtFile.Any())
             {
                 return ipsFromDatabase.Concat(ipsFromTxtFile);
             }
@@ -160,8 +161,8 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
             return "Attention: Please choose Cloudflare or a custom header";
         else if (_config.IsCloudflare)
             return "Attention: Cloudflare configuration is active";
-        else if (!string.IsNullOrWhiteSpace(_config?.CustomHeader))
-            return $"Attention: Using custom header {_config?.CustomHeader}";
+        else if (!string.IsNullOrWhiteSpace(_config.CustomHeader))
+            return $"Attention: Using custom header {_config.CustomHeader}";
         else
             return "";
     }
@@ -192,9 +193,7 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
             Log.Warning(ex, "WhitelistedIps.txt file cannot be found");
         }
 
-        ipsFromFile = processedLines ?? Enumerable.Empty<string>();
-
-        return ipsFromFile;
+        return processedLines; 
     }
     public string CheckIpWhitelistFile()
     {
@@ -202,11 +201,11 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
         {
             GetIpAddressesFromTxtFile(_env.ContentRootPath);
         }
-        
-        if (ipsFromFile.Any())
+
+        if (ipsFromFile != null && ipsFromFile.Any())
             return "Attention: Secondary IP whitelist in use";
         else
-            return "";
+            return string.Empty;
     }
 
     private string? CurrentUser
@@ -233,7 +232,7 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 
                 if (backOfficeIdentity != null && backOfficeIdentity.Name.HasValue())
                 {
-                    return backOfficeIdentity?.Name;
+                    return backOfficeIdentity.Name;
                 }
             }
 

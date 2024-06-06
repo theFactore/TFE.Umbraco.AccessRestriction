@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -8,6 +9,7 @@ using System.Net;
 using TFE.Umbraco.AccessRestriction.Repositories;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Infrastructure.Scoping;
+using Umbraco.Extensions;
 
 namespace TFE.Umbraco.AccessRestriction.Tests
 {
@@ -16,12 +18,14 @@ namespace TFE.Umbraco.AccessRestriction.Tests
 		private readonly Mock<IScopeProvider> _scopeProvider;
 		private readonly Mock<IOptionsSnapshot<CookieAuthenticationOptions>> _cookieOptionsSnapshot;
 		private readonly Mock<IHttpContextAccessor> _httpContextAccessor;
+		private readonly Mock<IWebHostEnvironment> _webHostEnvironment;
 
 		public IPAccessRepositoryTest()
 		{
 			_scopeProvider = new Mock<IScopeProvider>();
 			_cookieOptionsSnapshot = new Mock<IOptionsSnapshot<CookieAuthenticationOptions>>();
 			_httpContextAccessor = new Mock<IHttpContextAccessor>();
+			_webHostEnvironment = new Mock<IWebHostEnvironment>();
 		}
 
 		//------------------------------------- test GetHeaderInfo() -------------------------------------//
@@ -41,7 +45,8 @@ namespace TFE.Umbraco.AccessRestriction.Tests
 				_cookieOptionsSnapshot.Object,
 				_httpContextAccessor.Object,
 				AppCaches.NoCache,
-				config);
+				config,
+				_webHostEnvironment.Object);
 
 			// Act
 			var test = sut.GetHeaderInfo();
@@ -65,7 +70,8 @@ namespace TFE.Umbraco.AccessRestriction.Tests
 				_cookieOptionsSnapshot.Object,
 				_httpContextAccessor.Object,
 				AppCaches.NoCache,
-				config);
+				config, 
+				_webHostEnvironment.Object);
 
 			// Act
 			var test = sut.GetHeaderInfo();
@@ -89,7 +95,8 @@ namespace TFE.Umbraco.AccessRestriction.Tests
 				_cookieOptionsSnapshot.Object,
 				_httpContextAccessor.Object,
 				AppCaches.NoCache,
-				config);
+				config,
+				_webHostEnvironment.Object);
 
 			// Act
 			var test = sut.GetHeaderInfo();
@@ -113,7 +120,8 @@ namespace TFE.Umbraco.AccessRestriction.Tests
 				_cookieOptionsSnapshot.Object,
 				_httpContextAccessor.Object,
 				AppCaches.NoCache,
-				config);
+				config,
+				_webHostEnvironment.Object);
 
 			// Act
 			var test = sut.GetHeaderInfo();
@@ -145,8 +153,8 @@ namespace TFE.Umbraco.AccessRestriction.Tests
 				}
 			};
 
-			httpContext.Request.Headers.Add("MyCustomHeader", "192.168.1.2");
-			httpContext.Request.Headers.Add("CF-Connecting-IP", "192.168.1.3");
+            httpContext.Request.Headers.Append("MyCustomHeader", "192.168.1.2");
+			httpContext.Request.Headers.Append("CF-Connecting-IP", "192.168.1.3");
 
 			_httpContextAccessor.Setup(a => a.HttpContext).Returns(httpContext);
 
@@ -155,7 +163,8 @@ namespace TFE.Umbraco.AccessRestriction.Tests
 				_cookieOptionsSnapshot.Object,
 				_httpContextAccessor.Object,
 				AppCaches.NoCache,
-				config);
+				config,
+				_webHostEnvironment.Object);
 
 			// Act
 			var test = sut.GetClientIP();
@@ -180,8 +189,8 @@ namespace TFE.Umbraco.AccessRestriction.Tests
 			var config = new ConfigurationBuilder().AddInMemoryCollection(appSettingsStub).Build();
 			var httpContext = new DefaultHttpContext();
 
-			httpContext.Request.Headers.Add("MyCustomHeader", "192.168.1.1");
-			httpContext.Request.Headers.Add("CF-Connecting-IP", "192.168.1.2");
+			httpContext.Request.Headers.Append("MyCustomHeader", "192.168.1.1");
+			httpContext.Request.Headers.Append("CF-Connecting-IP", "192.168.1.2");
 
 			_httpContextAccessor.Setup(a => a.HttpContext).Returns(httpContext);
 
@@ -190,7 +199,8 @@ namespace TFE.Umbraco.AccessRestriction.Tests
 				_cookieOptionsSnapshot.Object,
 				_httpContextAccessor.Object,
 				AppCaches.NoCache,
-				config);
+				config,
+				_webHostEnvironment.Object);
 
 			// Act
 			var test = sut.GetClientIP();
@@ -214,7 +224,7 @@ namespace TFE.Umbraco.AccessRestriction.Tests
 			var config = new ConfigurationBuilder().AddInMemoryCollection(appSettingsStub).Build();
 			var httpContext = new DefaultHttpContext();
 
-			httpContext.Request.Headers.Add("MyCustomHeader", "192.168.1.1");
+			httpContext.Request.Headers.Append("MyCustomHeader", "192.168.1.1");
 
 			_httpContextAccessor.Setup(a => a.HttpContext).Returns(httpContext);
 
@@ -223,7 +233,8 @@ namespace TFE.Umbraco.AccessRestriction.Tests
 				_cookieOptionsSnapshot.Object,
 				_httpContextAccessor.Object,
 				AppCaches.NoCache,
-				config);
+				config,
+				_webHostEnvironment.Object);
 
 			// Act
 			var test = sut.GetClientIP();
@@ -247,7 +258,7 @@ namespace TFE.Umbraco.AccessRestriction.Tests
 			var config = new ConfigurationBuilder().AddInMemoryCollection(appSettingsStub).Build();
 			var httpContext = new DefaultHttpContext();
 
-			httpContext.Request.Headers.Add("CF-Connecting-IP", "192.168.1.1");
+			httpContext.Request.Headers.Append("CF-Connecting-IP", "192.168.1.1");
 
 			_httpContextAccessor.Setup(a => a.HttpContext).Returns(httpContext);
 
@@ -256,7 +267,8 @@ namespace TFE.Umbraco.AccessRestriction.Tests
 				_cookieOptionsSnapshot.Object,
 				_httpContextAccessor.Object,
 				AppCaches.NoCache,
-				config);
+				config,
+				_webHostEnvironment.Object);
 
 			// Act
 			var test = sut.GetClientIP();
@@ -293,7 +305,8 @@ namespace TFE.Umbraco.AccessRestriction.Tests
 				_cookieOptionsSnapshot.Object,
 				_httpContextAccessor.Object,
 				AppCaches.NoCache,
-				config);
+				config,
+				_webHostEnvironment.Object);
 
 			// Act
 			var test = sut.GetClientIP();

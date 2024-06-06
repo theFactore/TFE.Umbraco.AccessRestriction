@@ -10,31 +10,31 @@
 
 |License:|Umbraco:|Target Framework:|
 |--------|--------|-----------------|
-|[MIT License](./LICENSE.md "MIT License")|Umbraco 12|.NET 7|
+|[MIT License](./LICENSE.md "MIT License")|Umbraco 13|.NET 8|
 
 ## Package Installation
 
-The Umbraco 12 version of this package is only available via [NuGet](https://www.nuget.org/packages/TFE.Umbraco.AccessRestriction). To install the package, you can use either .NET CLI:
+The Umbraco 13 version of this package is only available via [NuGet](https://www.nuget.org/packages/TFE.Umbraco.AccessRestriction). To install the package, you can use either .NET CLI:
 
 ```C#
-dotnet add package TFE.Umbraco.AccessRestriction --version 12.0.1.1
+dotnet add package TFE.Umbraco.AccessRestriction --version 13.3.2
 ```
 
 or the older NuGet Package Manager:
 
 ```C#
-NuGet\Install-Package TFE.Umbraco.AccessRestriction --version 12.0.1.1
+NuGet\Install-Package TFE.Umbraco.AccessRestriction --version 13.3.2
 ```
 
 ## Umbraco Installation
 
-Before the Umbraco middleware, add the IPAccessRestrictionMiddleware to Startup.cs:
+Before the Umbraco middleware, add the IPAccessRestrictionMiddleware to Program.cs or Startup.cs in previous versions:
 
 ```C#
 app.UseMiddleware<IPAccessRestrictionMiddleware>(); 
 ```
 
-Add the necessary usings to Startup.cs:
+Add the necessary usings to Program.cs (or Startup.cs):
 
 ```C#
 using TFE.Umbraco.AccessRestriction.Middleware;
