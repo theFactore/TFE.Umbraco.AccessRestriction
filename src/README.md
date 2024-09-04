@@ -83,13 +83,13 @@ There are two different ways to whitelist an IP address, though the dashboard in
 
 ### Add an IP using the Umbraco dashboard
 
-![Add an IP to the whitelist](https://github.com/theFactore/TFE.Umbraco.AccessRestriction/blob/main/Add_whitelisted_IP.gif?raw=true)
+![Add an IP to the whitelist](https://i.imgur.com/6k55fLS.gif)
 
 ### Add an IP using WhitelistedIps.txt
 
 Add WhitelistedIps.txt to the root of your Umbraco project.
 
-![Add an IP to the whitelist txt file](https://github.com/theFactore/TFE.Umbraco.AccessRestriction/blob/main/Add_whitelisted_IP_via_txt_file.png?raw=true)
+![Add an IP to the whitelist txt file](https://i.imgur.com/7zKrth7.png)
 
 IP Addresses must be line separated and to add a comment use the #.
 
