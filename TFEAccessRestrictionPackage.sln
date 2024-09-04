@@ -3,9 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32319.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TFE.Umbraco.AccessRestriction", "TFE.Umbraco.AccessRestriction.csproj", "{5C2B8AC4-E8A5-49C0-B350-74291FF8C983}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3BE7C1CF-AF1D-49BE-B0D5-E8324BB3E0F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFE.Umbraco.AccessRestriction.Tests", "TFE.Umbraco.AccessRestriction.Tests\TFE.Umbraco.AccessRestriction.Tests.csproj", "{ABC6CBA0-1FD1-457B-BBFB-85EAADF8AACC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TFE.Umbraco.AccessRestriction", "src\TFE.Umbraco.AccessRestriction.csproj", "{BB639748-8219-4337-A267-DA13D300E944}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C5DD557F-55F8-4AE8-AC70-2DFF9E75B780}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TFE.Umbraco.AccessRestriction.Tests", "tests\TFE.Umbraco.AccessRestriction.Tests\TFE.Umbraco.AccessRestriction.Tests.csproj", "{D34058E6-A176-4D6B-89F0-EBA82BDEAF2F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "client", "client", "{242EE04C-45AA-400B-BA64-AB6B85B8206E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TFE.Umbraco.AccessRestriction.Client", "client\TFE.Umbraco.AccessRestriction.Client.csproj", "{31EE4B10-F452-4DCE-BCE0-67B4472F25E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,17 +21,26 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5C2B8AC4-E8A5-49C0-B350-74291FF8C983}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5C2B8AC4-E8A5-49C0-B350-74291FF8C983}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5C2B8AC4-E8A5-49C0-B350-74291FF8C983}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5C2B8AC4-E8A5-49C0-B350-74291FF8C983}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ABC6CBA0-1FD1-457B-BBFB-85EAADF8AACC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ABC6CBA0-1FD1-457B-BBFB-85EAADF8AACC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ABC6CBA0-1FD1-457B-BBFB-85EAADF8AACC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ABC6CBA0-1FD1-457B-BBFB-85EAADF8AACC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB639748-8219-4337-A267-DA13D300E944}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB639748-8219-4337-A267-DA13D300E944}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB639748-8219-4337-A267-DA13D300E944}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB639748-8219-4337-A267-DA13D300E944}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D34058E6-A176-4D6B-89F0-EBA82BDEAF2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D34058E6-A176-4D6B-89F0-EBA82BDEAF2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D34058E6-A176-4D6B-89F0-EBA82BDEAF2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D34058E6-A176-4D6B-89F0-EBA82BDEAF2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31EE4B10-F452-4DCE-BCE0-67B4472F25E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31EE4B10-F452-4DCE-BCE0-67B4472F25E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31EE4B10-F452-4DCE-BCE0-67B4472F25E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31EE4B10-F452-4DCE-BCE0-67B4472F25E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BB639748-8219-4337-A267-DA13D300E944} = {3BE7C1CF-AF1D-49BE-B0D5-E8324BB3E0F3}
+		{D34058E6-A176-4D6B-89F0-EBA82BDEAF2F} = {C5DD557F-55F8-4AE8-AC70-2DFF9E75B780}
+		{31EE4B10-F452-4DCE-BCE0-67B4472F25E9} = {242EE04C-45AA-400B-BA64-AB6B85B8206E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F4051D58-4AA6-4F19-9F94-E0FDD17CB009}

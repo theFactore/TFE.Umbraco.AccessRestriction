@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+		<EnableDefaultContentItems>false</EnableDefaultContentItems>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Nullable>enable</Nullable>
+		<ContentTargetFolders>.</ContentTargetFolders>
+	</PropertyGroup>
+
+	 <!--Information for the NuGet package -->
+	<PropertyGroup>
+		<PackageId>TFE.Umbraco.AccessRestriction</PackageId>
+		<Product>TFE.Umbraco.AccessRestriction</Product>
+		<Title>TFE.Umbraco.AccessRestriction</Title>
+		<Description>IP access restriction manager for Umbraco CMS </Description>
+		<Version>14.1.2</Version>
+		<Authors>Rutger Dijkstra</Authors>
+		<PackageTags>Umbraco, Plugin, Package, Access restriction, Ip Whitelist, Ip Blacklist, Umbraco-Marketplace, TFE, theFactor.e</PackageTags>
+		<PackageProjectUrl></PackageProjectUrl>
+		<PackageIcon>TFE.Umbraco.AccessRestriction.Icon.png</PackageIcon>
+		<RepositoryUrl>https://github.com/theFactore/TFE.Umbraco.AccessRestriction</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+	</PropertyGroup>
+
+	 <!--Include NuGet dependencies-->
+	<ItemGroup>
+		<PackageReference Include="Umbraco.Cms.Api.Management" Version="[14.1.2,)" />
+		<PackageReference Include="Umbraco.Cms.Web.Website" Version="[14.1.2,)" />
+		<PackageReference Include="Umbraco.Cms.Web.Common" Version="[14.1.2,)" />
+	</ItemGroup>
+
+	<!--Exclude transpiled javascript files from SonarCloud-->
+	<ItemGroup>
+		<None Include="**/*.js">
+			<SonarQubeExclude>true</SonarQubeExclude>
+		</None>
+	</ItemGroup>
+
+	<!-- Include the client build output in the project -->
+	<ItemGroup>
+		<Content Include="wwwroot\**\*" />
+		<Content Include="TFE.Umbraco.AccessRestriction.Icon.png" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Update="LICENSE.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	  <None Update="README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="wwwroot\" />
+	</ItemGroup>
+</Project>

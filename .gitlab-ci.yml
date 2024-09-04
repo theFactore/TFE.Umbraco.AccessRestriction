@@ -1,0 +1,32 @@
+stages:
+  - analyze
+
+default:
+  tags:
+    - docker-unrestricted
+
+analyze:
+  stage: analyze
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_REF_NAME =~ /^hotfix\/.*$/ || $CI_COMMIT_REF_NAME =~ /^feature\/.*$/
+  needs: []
+  image: registry.tfe.nl/docker/dotnet/dotnet-sonarscanner:8.0-6.2.0
+  variables:
+    GIT_DEPTH: 0
+  script:
+    - dotnet sonarscanner begin /o:thefactore /k:UmbracoPackageAccessRestriction /d:sonar.host.url=https://sonarcloud.io /d:sonar.login=$SONAR_TOKEN /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml /d:sonar.exclusions=**/Migrations/
+    - dotnet build -c Release
+    - dotnet tool install --global dotnet-coverage
+    - dotnet-coverage collect 'dotnet test --test-adapter-path:. --logger:"junit;LogFilePath=artifacts\{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"' -f xml  -o 'coverage.xml'
+    - dotnet sonarscanner end /d:sonar.login=$SONAR_TOKEN
+  artifacts:
+    when: always
+    paths:
+      - ./*test-result.xml
+    reports:
+      junit:
+        - ./*test-result.xml

@@ -1,0 +1,9 @@
+{
+  "printWidth": 120,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "importOrder": ["^[./]"],
+  "importOrderSeparation": false,
+  "importOrderSortSpecifiers": true,
+  "singleAttributePerLine": false
+}

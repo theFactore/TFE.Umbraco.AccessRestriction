@@ -1,0 +1,16 @@
+{
+  "$schema": "../../umbraco-package-schema.json",
+  "name": "TFE.Umbraco.AccessRestriction",
+  "id": "AccessRestrictionDashboard",
+  "version": "14.0.0",
+  "allowTelemetry": false,
+  "extensions": [
+    {
+      "type": "entryPoint",
+      "alias": "TFE.Umbraco.AccessRestriction.EntryPoint",
+      "name": "Access.Restriction.EntryPoint",
+      "js": "/App_Plugins/TFE.Umbraco.AccessRestriction/index.js"
+    }
+  ]
+}
+
