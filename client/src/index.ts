@@ -16,7 +16,6 @@ export const onInit: UmbEntryPointOnInit = (_host, extensionRegistry) => {
     const umbOpenApi = _auth.getOpenApiConfiguration();
     OpenAPI.BASE = umbOpenApi.base;
     OpenAPI.TOKEN = umbOpenApi.token;
-    OpenAPI.WITH_CREDENTIALS = umbOpenApi.withCredentials;
     OpenAPI.CREDENTIALS = umbOpenApi.credentials;
   });
 };

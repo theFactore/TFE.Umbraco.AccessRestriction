@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<StaticWebAssetBasePath>/</StaticWebAssetBasePath>
@@ -18,7 +18,7 @@
 		<Product>TFE.Umbraco.AccessRestriction</Product>
 		<Title>TFE.Umbraco.AccessRestriction</Title>
 		<Description>IP access restriction manager for Umbraco CMS </Description>
-		<Version>14.1.2</Version>
+		<Version>17.0.2</Version>
 		<Authors>Rutger Dijkstra</Authors>
 		<PackageTags>Umbraco, Plugin, Package, Access restriction, Ip Whitelist, Ip Blacklist, Umbraco-Marketplace, TFE, theFactor.e</PackageTags>
 		<PackageProjectUrl></PackageProjectUrl>
@@ -31,9 +31,9 @@
 
 	 <!--Include NuGet dependencies-->
 	<ItemGroup>
-		<PackageReference Include="Umbraco.Cms.Api.Management" Version="[14.1.2,)" />
-		<PackageReference Include="Umbraco.Cms.Web.Website" Version="[14.1.2,)" />
-		<PackageReference Include="Umbraco.Cms.Web.Common" Version="[14.1.2,)" />
+		<PackageReference Include="Umbraco.Cms.Api.Management" Version="[17.0.2,)" />
+		<PackageReference Include="Umbraco.Cms.Web.Website" Version="[17.0.2,)" />
+		<PackageReference Include="Umbraco.Cms.Web.Common" Version="[17.0.2,)" />
 	</ItemGroup>
 
 	<!--Exclude transpiled javascript files from SonarCloud-->
