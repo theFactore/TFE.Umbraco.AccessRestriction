@@ -627,32 +627,32 @@ let I = class extends it(tt) {
     var e;
     return N`
       <div class="container">
-        <div id="top-bar">
+        <div id="top-bar" style="margin-bottom:30px;">
           <uui-button label="Add new IP address" look="primary" @click="${this._openModal}"
             >+ Add new IP address</uui-button
           >
 
           <div id="installation-alert" ?hidden="${!this.installationInfo}">
-            <uui-icon name="alert" style="color: orange; margin-bottom: 4px;"></uui-icon>
+            <uui-icon name="alert" style="color: orange;"></uui-icon>
             <span>${ut(this.installationInfo)}</span>
           </div>
 
           <div id="header-alert" ?hidden="${!this.customHeaderInfo}">
-            <uui-icon name="alert" style="color: orange; margin-bottom: 4px;"></uui-icon>
+            <uui-icon name="alert" style="color: orange;"></uui-icon>
             <span>${this.customHeaderInfo}</span>
           </div>
 
           <div id="file-alert" ?hidden="${!this.ipWhitelisteTextFileInUse}">
-            <uui-icon name="alert" style="color: orange; margin-bottom: 4px;"></uui-icon>
+            <uui-icon name="alert" style="color: orange;"></uui-icon>
             <span>${this.ipWhitelisteTextFileInUse}</span>
           </div>
 
           <div id="ip-alert" ?hidden="${this.isIpInList}">
-            <uui-icon name="alert" style="color: orange; margin-bottom: 10px;"></uui-icon>
-            <span>Your IP address is not on the list</span>
+            <uui-icon name="alert" style="color: orange;"></uui-icon>
+            <span style="margin-right:10px;">Your IP address is not on the list</span>
             <uui-button
               label="Add current IP address"
-              look="primary"
+              look="primary" style="margin-right:10px;"
               @click="${() => this._openModal({
       id: "",
       ip: this.clientIP,

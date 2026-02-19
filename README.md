@@ -165,4 +165,8 @@ To raise a new bug, create an issue on the GitHub repository. To fix a bug or ad
 
 ### Who do I talk to?
 
-This project is maintained by Rutger Dijkstra and contributors. If you have any questions about the project please raise a issue on GitHub.
+This project is maintained by Henri Hessels and contributors. If you have any questions about the project please raise a issue on GitHub.
+
+## Contributors
+
+Thanks to Ernst Jan Feenstra for the Umbraco 17 upgrade.
