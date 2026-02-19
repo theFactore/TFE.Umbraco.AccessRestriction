@@ -39,13 +39,13 @@ export class IPAccessRestrictionContext extends UmbControllerBase {
   }
 
   _handleResultError(result: any) {
+    if (!result) {
+      throw new Error('Received undefined data');
+    }
     if (result.error) {
       throw new Error(result.error.message);
     }
-    if (result.data === undefined) {
-      throw new Error('Received undefined data');
-    }
-    return result.data;
+    return result;
   }
 
   async checkIpInList(): Promise<void> {

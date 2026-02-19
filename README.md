@@ -9,21 +9,21 @@
 ## Getting started
 
 | License:                                  | Umbraco:   | Target Framework: |
-| ----------------------------------------- | ---------- | ----------------- |
-| [MIT License](./LICENSE.md "MIT License") | Umbraco 14 | .NET 8            |
+| ----------------------------------------- |------------|-------------------|
+| [MIT License](./LICENSE.md "MIT License") | Umbraco 17 | .NET 10           |
 
 ## Package Installation
 
-The Umbraco 14.1.2 version of this package is only available via [NuGet](https://www.nuget.org/packages/TFE.Umbraco.AccessRestriction). To install the package, you can use either .NET CLI:
+The Umbraco 17.0.2 version of this package is only available via [NuGet](https://www.nuget.org/packages/TFE.Umbraco.AccessRestriction). To install the package, you can use either .NET CLI:
 
 ```C#
-dotnet add package TFE.Umbraco.AccessRestriction --version 14.1.2
+dotnet add package TFE.Umbraco.AccessRestriction --version 17.0.2
 ```
 
 or the older NuGet Package Manager:
 
 ```C#
-NuGet\Install-Package TFE.Umbraco.AccessRestriction --version 14.1.2
+NuGet\Install-Package TFE.Umbraco.AccessRestriction --version 17.0.2
 ```
 
 ## Umbraco Installation
@@ -165,4 +165,8 @@ To raise a new bug, create an issue on the GitHub repository. To fix a bug or ad
 
 ### Who do I talk to?
 
-This project is maintained by Rutger Dijkstra and contributors. If you have any questions about the project please raise a issue on GitHub.
+This project is maintained by Henri Hessels and contributors. If you have any questions about the project please raise a issue on GitHub.
+
+## Contributors
+
+Thanks to Ernst Jan Feenstra for the Umbraco 17 upgrade.

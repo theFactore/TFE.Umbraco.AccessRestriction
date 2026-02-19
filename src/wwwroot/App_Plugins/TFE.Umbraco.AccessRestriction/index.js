@@ -4,13 +4,13 @@ var X = (e) => {
 var Y = (e, t, s) => t.has(e) || X("Cannot " + s);
 var r = (e, t, s) => (Y(e, t, "read from private field"), s ? s.call(e) : t.get(e)), d = (e, t, s) => t.has(e) ? X("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, s), l = (e, t, s, i) => (Y(e, t, "write to private field"), i ? i.call(e, s) : t.set(e, s), s);
 import { UMB_AUTH_CONTEXT as dt } from "@umbraco-cms/backoffice/auth";
-import { LitElement as tt, html as k, unsafeHTML as ut, css as et, property as y, customElement as st, state as pt } from "@umbraco-cms/backoffice/external/lit";
+import { LitElement as tt, html as N, unsafeHTML as ut, css as et, property as h, customElement as st, state as pt } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin as it } from "@umbraco-cms/backoffice/element-api";
 import { UmbModalToken as ht, UMB_MODAL_MANAGER_CONTEXT as yt } from "@umbraco-cms/backoffice/modal";
 import { UmbControllerBase as rt } from "@umbraco-cms/backoffice/class-api";
 import { UmbContextToken as It } from "@umbraco-cms/backoffice/context-api";
 import { tryExecuteAndNotify as g } from "@umbraco-cms/backoffice/resources";
-import { UmbStringState as H, UmbArrayState as Q, UmbBooleanState as ft } from "@umbraco-cms/backoffice/observable-api";
+import { UmbStringState as B, UmbArrayState as Q, UmbBooleanState as ft } from "@umbraco-cms/backoffice/observable-api";
 import { of as bt, firstValueFrom as mt } from "@umbraco-cms/backoffice/external/rxjs";
 const At = [
   {
@@ -18,7 +18,7 @@ const At = [
     name: "Access Restriction",
     alias: "TFE.Umbraco.AccessRestriction",
     elementName: "access-restriction",
-    js: () => Promise.resolve().then(() => Lt),
+    js: () => Promise.resolve().then(() => Mt),
     weight: -10,
     meta: {
       label: "Access Restriction",
@@ -43,7 +43,7 @@ const At = [
     type: "globalContext",
     alias: "ip-access-restriction-context",
     name: "IP Access Restriction Context",
-    js: () => Promise.resolve().then(() => kt)
+    js: () => Promise.resolve().then(() => Nt)
   }
 ], Ct = [...wt];
 class Z extends Error {
@@ -59,24 +59,24 @@ class Rt extends Error {
     return !0;
   }
 }
-var m, A, f, C, x, $, R;
+var m, A, f, w, P, D, C;
 class _t {
   constructor(t) {
     d(this, m);
     d(this, A);
     d(this, f);
+    d(this, w);
+    d(this, P);
+    d(this, D);
     d(this, C);
-    d(this, x);
-    d(this, $);
-    d(this, R);
-    l(this, m, !1), l(this, A, !1), l(this, f, !1), l(this, C, []), l(this, x, new Promise((s, i) => {
-      l(this, $, s), l(this, R, i);
+    l(this, m, !1), l(this, A, !1), l(this, f, !1), l(this, w, []), l(this, P, new Promise((s, i) => {
+      l(this, D, s), l(this, C, i);
       const o = (c) => {
-        r(this, m) || r(this, A) || r(this, f) || (l(this, m, !0), r(this, $) && r(this, $).call(this, c));
+        r(this, m) || r(this, A) || r(this, f) || (l(this, m, !0), r(this, D) && r(this, D).call(this, c));
       }, n = (c) => {
-        r(this, m) || r(this, A) || r(this, f) || (l(this, A, !0), r(this, R) && r(this, R).call(this, c));
+        r(this, m) || r(this, A) || r(this, f) || (l(this, A, !0), r(this, C) && r(this, C).call(this, c));
       }, a = (c) => {
-        r(this, m) || r(this, A) || r(this, f) || r(this, C).push(c);
+        r(this, m) || r(this, A) || r(this, f) || r(this, w).push(c);
       };
       return Object.defineProperty(a, "isResolved", {
         get: () => r(this, m)
@@ -91,33 +91,33 @@ class _t {
     return "Cancellable Promise";
   }
   then(t, s) {
-    return r(this, x).then(t, s);
+    return r(this, P).then(t, s);
   }
   catch(t) {
-    return r(this, x).catch(t);
+    return r(this, P).catch(t);
   }
   finally(t) {
-    return r(this, x).finally(t);
+    return r(this, P).finally(t);
   }
   cancel() {
     if (!(r(this, m) || r(this, A) || r(this, f))) {
-      if (l(this, f, !0), r(this, C).length)
+      if (l(this, f, !0), r(this, w).length)
         try {
-          for (const t of r(this, C))
+          for (const t of r(this, w))
             t();
         } catch (t) {
           console.warn("Cancellation threw an error", t);
           return;
         }
-      r(this, C).length = 0, r(this, R) && r(this, R).call(this, new Rt("Request aborted"));
+      r(this, w).length = 0, r(this, C) && r(this, C).call(this, new Rt("Request aborted"));
     }
   }
   get isCancelled() {
     return r(this, f);
   }
 }
-m = new WeakMap(), A = new WeakMap(), f = new WeakMap(), C = new WeakMap(), x = new WeakMap(), $ = new WeakMap(), R = new WeakMap();
-const h = {
+m = new WeakMap(), A = new WeakMap(), f = new WeakMap(), w = new WeakMap(), P = new WeakMap(), D = new WeakMap(), C = new WeakMap();
+const y = {
   BASE: "",
   VERSION: "Latest",
   WITH_CREDENTIALS: !1,
@@ -127,13 +127,13 @@ const h = {
   PASSWORD: void 0,
   HEADERS: void 0,
   ENCODE_PATH: void 0
-}, z = (e) => e != null, G = (e) => typeof e == "string", L = (e) => G(e) && e !== "", J = (e) => typeof e == "object" && typeof e.type == "string" && typeof e.stream == "function" && typeof e.arrayBuffer == "function" && typeof e.constructor == "function" && typeof e.constructor.name == "string" && /^(Blob|File)$/.test(e.constructor.name) && /^(Blob|File)$/.test(e[Symbol.toStringTag]), ot = (e) => e instanceof FormData, St = (e) => {
+}, z = (e) => e != null, G = (e) => typeof e == "string", M = (e) => G(e) && e !== "", J = (e) => typeof e == "object" && typeof e.type == "string" && typeof e.stream == "function" && typeof e.arrayBuffer == "function" && typeof e.constructor == "function" && typeof e.constructor.name == "string" && /^(Blob|File)$/.test(e.constructor.name) && /^(Blob|File)$/.test(e[Symbol.toStringTag]), ot = (e) => e instanceof FormData, St = (e) => {
   try {
     return btoa(e);
   } catch {
     return Buffer.from(e).toString("base64");
   }
-}, Tt = (e) => {
+}, xt = (e) => {
   const t = [], s = (o, n) => {
     t.push(`${encodeURIComponent(o)}=${encodeURIComponent(String(n))}`);
   }, i = (o, n) => {
@@ -146,13 +146,13 @@ const h = {
   return Object.entries(e).forEach(([o, n]) => {
     i(o, n);
   }), t.length > 0 ? `?${t.join("&")}` : "";
-}, xt = (e, t) => {
+}, Pt = (e, t) => {
   const s = encodeURI, i = t.url.replace("{api-version}", e.VERSION).replace(/{(.*?)}/g, (n, a) => {
     var c;
     return (c = t.path) != null && c.hasOwnProperty(a) ? s(String(t.path[a])) : n;
   }), o = `${e.BASE}${i}`;
-  return t.query ? `${o}${Tt(t.query)}` : o;
-}, Pt = (e) => {
+  return t.query ? `${o}${xt(t.query)}` : o;
+}, Tt = (e) => {
   if (e.formData) {
     const t = new FormData(), s = (i, o) => {
       G(o) || J(o) ? t.append(i, o) : t.append(i, JSON.stringify(o));
@@ -161,21 +161,21 @@ const h = {
       Array.isArray(o) ? o.forEach((n) => s(i, n)) : s(i, o);
     }), t;
   }
-}, W = async (e, t) => typeof t == "function" ? t(e) : t, Ft = async (e, t) => {
+}, H = async (e, t) => typeof t == "function" ? t(e) : t, Ft = async (e, t) => {
   const [s, i, o, n] = await Promise.all([
-    W(t, e.TOKEN),
-    W(t, e.USERNAME),
-    W(t, e.PASSWORD),
-    W(t, e.HEADERS)
+    H(t, e.TOKEN),
+    H(t, e.USERNAME),
+    H(t, e.PASSWORD),
+    H(t, e.HEADERS)
   ]), a = Object.entries({
     Accept: "application/json",
     ...n,
     ...t.headers
-  }).filter(([c, w]) => z(w)).reduce((c, [w, T]) => ({
+  }).filter(([c, S]) => z(S)).reduce((c, [S, x]) => ({
     ...c,
-    [w]: String(T)
+    [S]: String(x)
   }), {});
-  if (L(s) && (a.Authorization = `Bearer ${s}`), L(i) && L(o)) {
+  if (M(s) && (a.Authorization = `Bearer ${s}`), M(i) && M(o)) {
     const c = St(`${i}:${o}`);
     a.Authorization = `Basic ${c}`;
   }
@@ -184,15 +184,15 @@ const h = {
   var t;
   if (e.body !== void 0)
     return (t = e.mediaType) != null && t.includes("/json") ? JSON.stringify(e.body) : G(e.body) || J(e.body) || ot(e.body) ? e.body : JSON.stringify(e.body);
-}, Dt = async (e, t, s, i, o, n, a) => {
-  const c = new AbortController(), w = {
+}, $t = async (e, t, s, i, o, n, a) => {
+  const c = new AbortController(), S = {
     headers: n,
     body: i ?? o,
     method: t.method,
     signal: c.signal
   };
-  return e.WITH_CREDENTIALS && (w.credentials = e.CREDENTIALS), a(() => c.abort()), await fetch(s, w);
-}, $t = (e, t) => {
+  return a(() => c.abort()), await fetch(s, S);
+}, Dt = (e, t) => {
   if (t) {
     const s = e.headers.get(t);
     if (G(s))
@@ -207,7 +207,7 @@ const h = {
     } catch (t) {
       console.error(t);
     }
-}, Nt = (e, t) => {
+}, Vt = (e, t) => {
   const i = {
     400: "Bad Request",
     401: "Unauthorized",
@@ -236,16 +236,16 @@ const h = {
   }
 }, E = (e, t) => new _t(async (s, i, o) => {
   try {
-    const n = xt(e, t), a = Pt(t), c = Ot(t), w = await Ft(e, t);
+    const n = Pt(e, t), a = Tt(t), c = Ot(t), S = await Ft(e, t);
     if (!o.isCancelled) {
-      const T = await Dt(e, t, n, c, a, w, o), ct = await Ut(T), lt = $t(T, t.responseHeader), K = {
+      const x = await $t(e, t, n, c, a, S, o), ct = await Ut(x), lt = Dt(x, t.responseHeader), K = {
         url: n,
-        ok: T.ok,
-        status: T.status,
-        statusText: T.statusText,
+        ok: x.ok,
+        status: x.status,
+        statusText: x.statusText,
         body: lt ?? ct
       };
-      Nt(t, K), s(K.body);
+      Vt(t, K), s(K.body);
     }
   } catch (n) {
     i(n);
@@ -257,7 +257,7 @@ class v {
    * @throws ApiError
    */
   static getUmbracoApiV1IpAccessRestrictionApiCheckIpWhitelistFile() {
-    return E(h, {
+    return E(y, {
       method: "GET",
       url: "/umbraco/api/v1/IPAccessRestrictionApi/CheckIpWhitelistFile",
       errors: {
@@ -271,7 +271,7 @@ class v {
    * @throws ApiError
    */
   static deleteUmbracoApiV1IpAccessRestrictionApiDelete(t) {
-    return E(h, {
+    return E(y, {
       method: "DELETE",
       url: "/umbraco/api/v1/IPAccessRestrictionApi/Delete/{id}",
       path: {
@@ -287,7 +287,7 @@ class v {
    * @throws ApiError
    */
   static getUmbracoApiV1IpAccessRestrictionApiGetAll() {
-    return E(h, {
+    return E(y, {
       method: "GET",
       url: "/umbraco/api/v1/IPAccessRestrictionApi/GetAll"
     });
@@ -297,7 +297,7 @@ class v {
    * @throws ApiError
    */
   static getUmbracoApiV1IpAccessRestrictionApiGetAllIpAddresses() {
-    return E(h, {
+    return E(y, {
       method: "GET",
       url: "/umbraco/api/v1/IPAccessRestrictionApi/GetAllIpAddresses"
     });
@@ -308,7 +308,7 @@ class v {
    * @throws ApiError
    */
   static getUmbracoApiV1IpAccessRestrictionApiGetbyId(t) {
-    return E(h, {
+    return E(y, {
       method: "GET",
       url: "/umbraco/api/v1/IPAccessRestrictionApi/GetbyId/{id}",
       path: {
@@ -324,7 +324,7 @@ class v {
    * @throws ApiError
    */
   static getUmbracoApiV1IpAccessRestrictionApiGetClientIp() {
-    return E(h, {
+    return E(y, {
       method: "GET",
       url: "/umbraco/api/v1/IPAccessRestrictionApi/GetClientIP"
     });
@@ -334,7 +334,7 @@ class v {
    * @throws ApiError
    */
   static getUmbracoApiV1IpAccessRestrictionApiGetHeaderInfo() {
-    return E(h, {
+    return E(y, {
       method: "GET",
       url: "/umbraco/api/v1/IPAccessRestrictionApi/GetHeaderInfo",
       errors: {
@@ -348,7 +348,7 @@ class v {
    * @throws ApiError
    */
   static postUmbracoApiV1IpAccessRestrictionApiSave(t) {
-    return E(h, {
+    return E(y, {
       method: "POST",
       url: "/umbraco/api/v1/IPAccessRestrictionApi/Save",
       body: t,
@@ -363,7 +363,7 @@ class v {
    * @throws ApiError
    */
   static getUmbracoApiV1IpAccessRestrictionApiGetInstallationInfo() {
-    return E(h, {
+    return E(y, {
       method: "GET",
       url: "/umbraco/api/v1/IPAccessRestrictionApi/GetInstallationInfo",
       errors: {
@@ -375,11 +375,11 @@ class v {
 const ne = (e, t) => {
   t.registerMany([...gt, ...vt, ...Ct]), e.consumeContext(dt, (s) => {
     const i = s.getOpenApiConfiguration();
-    h.BASE = i.base, h.TOKEN = i.token, h.WITH_CREDENTIALS = i.withCredentials, h.CREDENTIALS = i.credentials;
+    y.BASE = i.base, y.TOKEN = i.token, y.CREDENTIALS = i.credentials;
   });
 };
 var u;
-class Vt {
+class jt {
   constructor(t) {
     d(this, u);
     l(this, u, t);
@@ -415,11 +415,11 @@ class Vt {
 }
 u = new WeakMap();
 var p;
-class jt extends rt {
+class kt extends rt {
   constructor(s) {
     super(s);
     d(this, p);
-    l(this, p, new Vt(this));
+    l(this, p, new jt(this));
   }
   async checkIpWhitelistFile() {
     return r(this, p).checkIpWhitelistFile();
@@ -450,29 +450,29 @@ class jt extends rt {
   }
 }
 p = new WeakMap();
-var U, N, P, F, V, O, j;
+var U, V, T, F, j, O, k;
 class q extends rt {
   constructor(s) {
     super(s);
     d(this, U);
-    d(this, N);
-    d(this, P);
-    d(this, F);
     d(this, V);
-    d(this, O);
+    d(this, T);
+    d(this, F);
     d(this, j);
-    l(this, U, new H("")), this.ipWhitelisteTextFileInUse = r(this, U).asObservable(), l(this, N, new Q([], (i) => i.id)), this.ipEntries = r(this, N).asObservable(), l(this, P, new Q([], (i) => i)), this.ips = r(this, P).asObservable(), l(this, F, new H("")), this.clientIp = r(this, F).asObservable(), l(this, V, new H("")), this.headerInfo = r(this, V).asObservable(), l(this, O, new ft(!1)), this.isIpInList = r(this, O).asObservable(), l(this, j, new H("")), this.installationInfo = r(this, j).asObservable(), this.provideContext(B, this), this.repository = new jt(this), this.checkIpInList();
+    d(this, O);
+    d(this, k);
+    l(this, U, new B("")), this.ipWhitelisteTextFileInUse = r(this, U).asObservable(), l(this, V, new Q([], (i) => i.id)), this.ipEntries = r(this, V).asObservable(), l(this, T, new Q([], (i) => i)), this.ips = r(this, T).asObservable(), l(this, F, new B("")), this.clientIp = r(this, F).asObservable(), l(this, j, new B("")), this.headerInfo = r(this, j).asObservable(), l(this, O, new ft(!1)), this.isIpInList = r(this, O).asObservable(), l(this, k, new B("")), this.installationInfo = r(this, k).asObservable(), this.provideContext(W, this), this.repository = new kt(this), this.checkIpInList();
   }
   _handleResultError(s) {
     if (s.error)
       throw new Error(s.error.message);
-    if (s.data === void 0)
+    if (s === void 0)
       throw new Error("Received undefined data");
-    return s.data;
+    return s;
   }
   async checkIpInList() {
     await this.getAllIpAddresses(), await this.getClientIp();
-    let s = r(this, P).getValue(), i = r(this, F).getValue();
+    let s = r(this, T).getValue(), i = r(this, F).getValue();
     s && i ? r(this, O).setValue(s.includes(i)) : (console.error("Your IP address is not on the list"), r(this, O).setValue(!1));
   }
   async checkIpWhitelistFile() {
@@ -495,7 +495,7 @@ class q extends rt {
   async getAllIpAccessEntries() {
     try {
       const s = await this.repository.getAllIpAccessEntries(), i = this._handleResultError(s);
-      r(this, N).setValue(i);
+      r(this, V).setValue(i);
     } catch (s) {
       console.error("Error in getAllIpAccessEntries:", s);
     }
@@ -503,7 +503,7 @@ class q extends rt {
   async getAllIpAddresses() {
     try {
       const s = await this.repository.getAllIpAddresses(), i = this._handleResultError(s);
-      r(this, P).setValue(i);
+      r(this, T).setValue(i);
     } catch (s) {
       console.error("Error in getAllIpAddresses:", s);
     }
@@ -528,7 +528,7 @@ class q extends rt {
   async getHeaderInfo() {
     try {
       const s = await this.repository.getHeaderInfo(), i = this._handleResultError(s);
-      r(this, V).setValue(i);
+      r(this, j).setValue(i);
     } catch (s) {
       console.error("Error in getHeaderInfo:", s);
     }
@@ -544,19 +544,19 @@ class q extends rt {
   async getInstallationInfo() {
     try {
       const s = await this.repository.GetInstallationInfo(), i = this._handleResultError(s);
-      r(this, j).setValue(i);
+      r(this, k).setValue(i);
     } catch (s) {
       console.error("Error in getInstallationInfo:", s);
     }
   }
 }
-U = new WeakMap(), N = new WeakMap(), P = new WeakMap(), F = new WeakMap(), V = new WeakMap(), O = new WeakMap(), j = new WeakMap();
-const B = new It(
+U = new WeakMap(), V = new WeakMap(), T = new WeakMap(), F = new WeakMap(), j = new WeakMap(), O = new WeakMap(), k = new WeakMap();
+const W = new It(
   q.name
-), kt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+), Nt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   IPAccessRestrictionContext: q,
-  IP_ACCESS_RESTRICTION_CONTEXT_TOKEN: B,
+  IP_ACCESS_RESTRICTION_CONTEXT_TOKEN: W,
   default: q
 }, Symbol.toStringTag, { value: "Module" })), Gt = new ht("ip-entry-modal", {
   modal: {
@@ -564,14 +564,14 @@ const B = new It(
     size: "small"
   }
 });
-var Ht = Object.defineProperty, Wt = Object.getOwnPropertyDescriptor, _ = (e, t, s, i) => {
-  for (var o = i > 1 ? void 0 : i ? Wt(t, s) : t, n = e.length - 1, a; n >= 0; n--)
+var Bt = Object.defineProperty, Ht = Object.getOwnPropertyDescriptor, R = (e, t, s, i) => {
+  for (var o = i > 1 ? void 0 : i ? Ht(t, s) : t, n = e.length - 1, a; n >= 0; n--)
     (a = e[n]) && (o = (i ? a(t, s, o) : a(o)) || o);
-  return i && o && Ht(t, s, o), o;
+  return i && o && Bt(t, s, o), o;
 };
 let I = class extends it(tt) {
   constructor() {
-    super(), this.isIpInList = !1, this.consumeContext(B, (e) => {
+    super(), this.isIpInList = !1, this.consumeContext(W, (e) => {
       this.context = e, this.observe(e.ipWhitelisteTextFileInUse, (t) => {
         this.ipWhitelisteTextFileInUse = t;
       }), this.observe(e.ipEntries, (t) => {
@@ -625,34 +625,34 @@ let I = class extends it(tt) {
   }
   render() {
     var e;
-    return k`
+    return N`
       <div class="container">
-        <div id="top-bar">
+        <div id="top-bar" style="margin-bottom:30px;">
           <uui-button label="Add new IP address" look="primary" @click="${this._openModal}"
             >+ Add new IP address</uui-button
           >
 
           <div id="installation-alert" ?hidden="${!this.installationInfo}">
-            <uui-icon name="alert" style="color: orange; margin-bottom: 4px;"></uui-icon>
+            <uui-icon name="alert" style="color: orange;"></uui-icon>
             <span>${ut(this.installationInfo)}</span>
           </div>
 
           <div id="header-alert" ?hidden="${!this.customHeaderInfo}">
-            <uui-icon name="alert" style="color: orange; margin-bottom: 4px;"></uui-icon>
+            <uui-icon name="alert" style="color: orange;"></uui-icon>
             <span>${this.customHeaderInfo}</span>
           </div>
 
           <div id="file-alert" ?hidden="${!this.ipWhitelisteTextFileInUse}">
-            <uui-icon name="alert" style="color: orange; margin-bottom: 4px;"></uui-icon>
+            <uui-icon name="alert" style="color: orange;"></uui-icon>
             <span>${this.ipWhitelisteTextFileInUse}</span>
           </div>
 
           <div id="ip-alert" ?hidden="${this.isIpInList}">
-            <uui-icon name="alert" style="color: orange; margin-bottom: 10px;"></uui-icon>
-            <span>Your IP address is not on the list</span>
+            <uui-icon name="alert" style="color: orange;"></uui-icon>
+            <span style="margin-right:10px;">Your IP address is not on the list</span>
             <uui-button
               label="Add current IP address"
-              look="primary"
+              look="primary" style="margin-right:10px;"
               @click="${() => this._openModal({
       id: "",
       ip: this.clientIP,
@@ -679,7 +679,7 @@ let I = class extends it(tt) {
           </uui-table-head>
 
           ${(e = this.ipEntries) == null ? void 0 : e.map(
-      (t) => k`
+      (t) => N`
               <uui-table-row>
                 <uui-table-cell>${t.ip}</uui-table-cell>
                 <uui-table-cell>${t.description}</uui-table-cell>
@@ -719,48 +719,48 @@ I.styles = et`
       align-items: center;
     }
   `;
-_([
-  y({ type: String })
+R([
+  h({ type: String })
 ], I.prototype, "ipWhitelisteTextFileInUse", 2);
-_([
-  y({ type: Array })
+R([
+  h({ type: Array })
 ], I.prototype, "ipEntries", 2);
-_([
-  y({ type: Array })
+R([
+  h({ type: Array })
 ], I.prototype, "ips", 2);
-_([
-  y({ type: String })
+R([
+  h({ type: String })
 ], I.prototype, "clientIP", 2);
-_([
-  y({ type: String })
+R([
+  h({ type: String })
 ], I.prototype, "customHeaderInfo", 2);
-_([
-  y({ type: Boolean })
+R([
+  h({ type: Boolean })
 ], I.prototype, "isIpInList", 2);
-_([
-  y({ type: String })
+R([
+  h({ type: String })
 ], I.prototype, "installationInfo", 2);
-I = _([
+I = R([
   st("dashboard-element")
 ], I);
-const Bt = I, Lt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const Wt = I, Mt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   get DashboardElement() {
     return I;
   },
-  default: Bt
+  default: Wt
 }, Symbol.toStringTag, { value: "Module" }));
-var Mt = Object.defineProperty, qt = Object.getOwnPropertyDescriptor, nt = (e) => {
+var Lt = Object.defineProperty, qt = Object.getOwnPropertyDescriptor, nt = (e) => {
   throw TypeError(e);
-}, S = (e, t, s, i) => {
+}, _ = (e, t, s, i) => {
   for (var o = i > 1 ? void 0 : i ? qt(t, s) : t, n = e.length - 1, a; n >= 0; n--)
     (a = e[n]) && (o = (i ? a(t, s, o) : a(o)) || o);
-  return i && o && Mt(t, s, o), o;
-}, at = (e, t, s) => t.has(e) || nt("Cannot " + s), M = (e, t, s) => (at(e, t, "read from private field"), t.get(e)), zt = (e, t, s) => t.has(e) ? nt("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, s), Jt = (e, t, s, i) => (at(e, t, "write to private field"), t.set(e, s), s), D;
+  return i && o && Lt(t, s, o), o;
+}, at = (e, t, s) => t.has(e) || nt("Cannot " + s), L = (e, t, s) => (at(e, t, "read from private field"), t.get(e)), zt = (e, t, s) => t.has(e) ? nt("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, s), Jt = (e, t, s, i) => (at(e, t, "write to private field"), t.set(e, s), s), $;
 let b = class extends it(tt) {
   constructor() {
-    super(), zt(this, D), this.isValid = !1, this.errors = {}, this.id = "", this.ip = "", this.description = "", this.initialIp = "", this.consumeContext(B, (e) => {
-      Jt(this, D, e);
+    super(), zt(this, $), this.isValid = !1, this.errors = {}, this.id = "", this.ip = "", this.description = "", this.initialIp = "", this.consumeContext(W, (e) => {
+      Jt(this, $, e);
     });
   }
   firstUpdated() {
@@ -786,7 +786,7 @@ let b = class extends it(tt) {
     };
     this.id && (t.id = this.id);
     try {
-      M(this, D) ? await M(this, D).saveIpAccessEntry(t) : console.error("Access restriction context is not available"), this._handleClose();
+      L(this, $) ? await L(this, $).saveIpAccessEntry(t) : console.error("Access restriction context is not available"), this._handleClose();
     } catch (s) {
       console.error("Failed to save IP access entry:", s);
     }
@@ -808,7 +808,7 @@ let b = class extends it(tt) {
   async _checkDuplicateIps(e) {
     var t;
     try {
-      const s = ((t = M(this, D)) == null ? void 0 : t.ips) ?? bt();
+      const s = ((t = L(this, $)) == null ? void 0 : t.ips) ?? bt();
       return (await mt(s)).includes(e) && this.initialIp !== e;
     } catch (s) {
       return console.error("No duplicates found in ips observable, error:", s), !1;
@@ -818,7 +818,7 @@ let b = class extends it(tt) {
     this.errors = {}, this._validateIp(this.ip) ? await this._checkDuplicateIps(this.ip) && (this.errors.ip = "The IP Address is already whitelisted", this.requestUpdate()) : this.errors.ip = "Invalid IP", this.description || (this.errors.description = "A description is required"), this.isValid = Object.keys(this.errors).length === 0;
   }
   render() {
-    return k`
+    return N`
       <umb-body-layout headline="IP Access Restriction">
         <uui-box>
           <p>
@@ -847,7 +847,7 @@ let b = class extends it(tt) {
                     @input="${this._handleInputChange}"
                   >
                   </uui-input>
-                  ${this.errors.ip ? k`<div class="error-message">${this.errors.ip}</div>` : ""}
+                  ${this.errors.ip ? N`<div class="error-message">${this.errors.ip}</div>` : ""}
                 </div>
               </uui-form-layout-item>
 
@@ -867,7 +867,7 @@ let b = class extends it(tt) {
                     @input="${this._handleInputChange}"
                   >
                   </uui-input>
-                  ${this.errors.description ? k`<div class="error-message">${this.errors.description}</div>` : ""}
+                  ${this.errors.description ? N`<div class="error-message">${this.errors.description}</div>` : ""}
                 </div>
               </uui-form-layout-item>
 
@@ -893,7 +893,7 @@ let b = class extends it(tt) {
     `;
   }
 };
-D = /* @__PURE__ */ new WeakMap();
+$ = /* @__PURE__ */ new WeakMap();
 b.styles = et`
     #id {
       display: none;
@@ -902,28 +902,28 @@ b.styles = et`
       color: rgb(191, 33, 78);
     }
   `;
-S([
+_([
   pt()
 ], b.prototype, "isValid", 2);
-S([
-  y({ type: Object })
+_([
+  h({ type: Object })
 ], b.prototype, "errors", 2);
-S([
-  y({ type: String })
+_([
+  h({ type: String })
 ], b.prototype, "id", 2);
-S([
-  y({ type: String })
+_([
+  h({ type: String })
 ], b.prototype, "ip", 2);
-S([
-  y({ type: String })
+_([
+  h({ type: String })
 ], b.prototype, "description", 2);
-S([
-  y({ attribute: !1 })
+_([
+  h({ attribute: !1 })
 ], b.prototype, "data", 2);
-S([
-  y({ attribute: !1 })
+_([
+  h({ attribute: !1 })
 ], b.prototype, "modalContext", 2);
-b = S([
+b = _([
   st("ip-access-restriction-modal")
 ], b);
 const Kt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({

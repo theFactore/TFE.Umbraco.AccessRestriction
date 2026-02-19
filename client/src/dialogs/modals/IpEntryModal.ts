@@ -1,5 +1,5 @@
 import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
-import { UmbModalExtensionElement } from '@umbraco-cms/backoffice/extension-registry';
+import { UmbModalExtensionElement } from '@umbraco-cms/backoffice/modal';
 import { css, customElement, html, LitElement, property, state } from '@umbraco-cms/backoffice/external/lit';
 import { IpEntryModalData, IpEntryModalValue } from '@dialogs/modals/IpEntryModalToken';
 import { IP_ACCESS_RESTRICTION_CONTEXT_TOKEN, IPAccessRestrictionContext } from '@context/IpAccessRestrictionContext';
