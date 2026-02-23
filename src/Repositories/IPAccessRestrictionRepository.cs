@@ -108,9 +108,9 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
         return scope.Database.Fetch<IPAccessEntry>(sql);
     }
 
-    public IEnumerable<string> GetWhilelistedIpAddresses()
+    public IEnumerable<string> GetWhitelistedIpAddresses()
     {
-        var result = _globalCache.Get("GetWhilelistedIpAddresses", () =>
+        var result = _globalCache.Get("GetWhitelistedIpAddresses", () =>
         {
             using var scope = _scopeProvider.CreateScope(autoComplete: true);
 
@@ -178,7 +178,7 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
             scope.Database.Insert(entry);
         }
 
-        _globalCache.ClearByKey("GetWhilelistedIpAddresses");
+        _globalCache.ClearByKey("GetWhitelistedIpAddresses");
 
         return true;
     }

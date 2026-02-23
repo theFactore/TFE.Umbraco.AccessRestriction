@@ -85,7 +85,7 @@ public class IPAccessRestrictionMiddleware
                 proceed = !Helper.IsOnList(ipBlacklist, clientIp);
                 if (proceed)
                 {
-                    var ipWhitelist = iPAccessRestrictionRepository.GetWhilelistedIpAddresses();
+                    var ipWhitelist = iPAccessRestrictionRepository.GetWhitelistedIpAddresses();
 
                     proceed = Helper.IsOnList(ipWhitelist, clientIp);
                 }
