@@ -14,16 +14,16 @@
 
 ## Package Installation
 
-The Umbraco 17.0.2 version of this package is only available via [NuGet](https://www.nuget.org/packages/TFE.Umbraco.AccessRestriction). To install the package, you can use either .NET CLI:
+The Umbraco 17.1.0 version of this package is only available via [NuGet](https://www.nuget.org/packages/TFE.Umbraco.AccessRestriction). To install the package, you can use either .NET CLI:
 
 ```C#
-dotnet add package TFE.Umbraco.AccessRestriction --version 17.0.2
+dotnet add package TFE.Umbraco.AccessRestriction --version 17.1.0
 ```
 
 or the older NuGet Package Manager:
 
 ```C#
-NuGet\Install-Package TFE.Umbraco.AccessRestriction --version 17.0.2
+NuGet\Install-Package TFE.Umbraco.AccessRestriction --version 17.1.0
 ```
 
 ## Umbraco Installation
@@ -129,9 +129,9 @@ To block an IP address, add it to the BlackList setting in the appsettings.
 
 ## Breaking changes
 
-### 17.x.x
+### 17.1.0
 
-A few settings have been changed in v17.x.x:
+A few settings have been changed in v17.1.0:
 
 - IncludePaths and ExcludePaths have been changed from string to array:
 ```C#
