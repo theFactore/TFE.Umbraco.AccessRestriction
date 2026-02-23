@@ -44,46 +44,56 @@ Add these settings to appsettings.json
 
 ```C#
 "TFE.Umbraco.AccessRestriction": {
-    "disable": true,
-    "logBlockedIP": false,
-    "localHost": "127.0.0.1",
-    "excludePaths": "/umbraco, /App_Plugins, /api/keepalive/ping",
-    "includePaths": "",
-    "isCloudFlare": false,
-    "customHeader": ""
+    "Disable": true,
+	"HttpStatusCode": 403,
+	"HttpResponseMessage": "",
+    "LogBlockedIP": false,
+    "LocalHost": "127.0.0.1",
+    "ExcludePaths": ["/umbraco", "/App_Plugins", "/api/keepalive/ping"],
+    "IncludePaths": [],
+    "IsCloudFlare": false,
+    "CustomHeader": "",
+	"Whitelist": ["127.0.0.1"],
+	"Blacklist": []
   }
 ```
 
-Either use "excludePaths" or "includePaths" to direct the IP blocker.
+Either use "ExcludePaths" or "IncludePaths" to direct the IP blocker.
 
 ### Azure / CloudFlare / Umbraco Cloud Installation
 
 When installed on a cloud environment make sure to add your the cloud IP Addresses.
-Replace the following excludePaths property in appsettings.json :
+Replace the following ExcludePaths property in appsettings.json :
 
 ```C#
-"excludePaths": "/umbraco, /App_Plugins, /api/keepalive/ping, /umbraco-signin-oidc, /sb",
+"ExcludePaths": ["/umbraco", "/App_Plugins", "/api/keepalive/ping", "/umbraco-signin-oidc", "/sb"],
 ```
 
 Set to true when using Cloudflare
 
 ```C#
-"isCloudFlare": true,
+"IsCloudFlare": true,
 ```
 
-If a proxy is being used, set the value of the 'customHeader' field to 'header' with the IP address used by the proxy.
+If a proxy is being used, set the value of the 'CustomHeader' field to 'header' with the IP address used by the proxy.
 
 ```C#
-"customHeader": "",
+"CustomHeader": "",
 ```
 
 ## Whitelist IP Addresses
 
-There are two different ways to whitelist an IP address, though the dashboard interface and by adding the IP address to WhitelistedIps.txt. Both methods can be used simultaneously and separately.
+There are three different ways to whitelist an IP address, though the dashboard interface, by adding the IP address to WhitelistedIps.txt or by adding the IP address to the WhiteList setting in the appsettings. All methods can be used simultaneously and separately.
 
 ### Add an IP using the Umbraco dashboard
 
 ![Add an IP to the whitelist](https://i.imgur.com/6k55fLS.gif)
+
+### Add an IP using appsettings.json
+
+```C#
+"WhiteList": ["192.168.1.1", "192.168.1.2", "192.168.1.3", "::1", "192.168.1.4"],
+```
 
 ### Add an IP using WhitelistedIps.txt
 
@@ -101,13 +111,38 @@ IP Addresses must be line separated and to add a comment use the #.
 192.168.1.4 #Hank
 ```
 
+## Block IP Addresses
+
+To block an IP address, add it to the BlackList setting in the appsettings.
+
+```C#
+"BlackList": ["192.168.1.1", "192.168.1.2", "192.168.1.3", "::1", "192.168.1.4"],
+```
+
 ## Features
 
 - Global dashboard for listing all whitelisted IP addresses.
-- Package handles IP addresses added manually by a user with admin rights and IP addresses added to the WhitelistedIps.txt.
-- logBlockedIP enables you to see all blocked IP addresses in the Umbraco log.
-- Use _as wildcard to add a range of IP addresses e.g. "192.168.1._"
+- Package handles IP addresses added manually by a user with admin rights and IP addresses added to the WhitelistedIps.txt or appsettings.json.
+- LogBlockedIP enables you to see all blocked IP addresses in the Umbraco log.
+- Use _ as wildcard to add a range of IP addresses e.g. "192.168.1._"
 - Include or exclude paths from being blocked.
+
+## Breaking changes
+
+### 17.x.x
+
+A few settings have been changed in v17.x.x:
+
+- IncludePaths and ExcludePaths have been changed from string to array:
+```C#
+"ExcludePaths": ["/umbraco", "/App_Plugins", "/api/keepalive/ping"],
+"IncludePaths": [],
+```
+- 'You don't have permission to access / on this server' is no longer shown when a request is blocked. The server's default 403 page is used instead. The following settings have been added to change this behaviour:
+```C#
+"HttpStatusCode": 403,
+"HttpResponseMessage": "You don't have permission to access / on this server",
+```
 
 ## Building and Packing the NuGet Package
 
