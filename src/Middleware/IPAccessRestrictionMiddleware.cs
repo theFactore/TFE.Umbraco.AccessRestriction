@@ -68,9 +68,6 @@ public class IPAccessRestrictionMiddleware
         var excludePaths = _config?.ExcludePaths ?? [];
         var includePaths = _config?.IncludePaths ?? [];
 
-        //var isIncludePathMatch = includePaths != null && includePaths.Length > 0 && Array.Exists(includePaths, includePath => requestPath.StartsWithSegments(includePath.Trim()));
-        //var isExcludePathMatch = excludePaths != null && excludePaths.Length > 0 && Array.Exists(excludePaths, excludePath => requestPath.StartsWithSegments(excludePath.Trim()));
-        
         var isIncludePathMatch = includePaths.Any(includePath => requestPath.StartsWithSegments(includePath.Trim()));
         var isExcludePathMatch = excludePaths.Any(excludePath => requestPath.StartsWithSegments(excludePath.Trim()));
 
