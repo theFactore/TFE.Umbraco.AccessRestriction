@@ -48,7 +48,7 @@ public class IPAccessRestrictionApiController : ControllerBase
     [ProducesResponseType(typeof(IEnumerable<string>), StatusCodes.Status200OK)]
     public IActionResult GetAllIpAddresses()
     {
-        var allIpAddresses = _iPAccessRestrictionRepository.GetAllIpAddresses();
+        var allIpAddresses = _iPAccessRestrictionRepository.GetWhitelistedIpAddresses();
         return Ok(allIpAddresses);
     }
 

@@ -10,14 +10,14 @@ public class Helper
         _runtimeState = runtimeState;
     }
 
-    public static bool IsWhitelisted(IEnumerable<string>? whitelist, string clientIp)
+    public static bool IsOnList(IEnumerable<string>? list, string clientIp)
     {
-        if (whitelist is null)
+        if (list is null)
         {
             return false;
         }
         clientIp = clientIp.ToLower();
-        foreach (var ip in whitelist)
+        foreach (var ip in list)
         {
             if (string.IsNullOrWhiteSpace(ip))
             {
@@ -27,7 +27,7 @@ public class Helper
             if(listIP.EndsWith('*'))
             {
 
-            listIP = listIP[..^1];
+                listIP = listIP[..^1];
                
                 if(string.IsNullOrEmpty(listIP) || clientIp.StartsWith(listIP))
                 {

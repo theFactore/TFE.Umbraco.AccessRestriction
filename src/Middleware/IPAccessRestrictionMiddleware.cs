@@ -52,8 +52,11 @@ public class IPAccessRestrictionMiddleware
             await _next(context);
             return;
         }
-        context.Response.StatusCode = 403;
-        await context.Response.WriteAsync("You don't have permission to access / on this server.");
+        context.Response.StatusCode = _config.HttpStatusCode ?? 403;
+        if (!string.IsNullOrEmpty(_config.HttpResponseMessage))
+        {
+            await context.Response.WriteAsync(_config.HttpResponseMessage);
+        }
     }
 
     private bool CheckClientIP(HttpContext context, ILogger<IPAccessRestrictionMiddleware> logger, IIPAccessRestrictionRepository iPAccessRestrictionRepository)
@@ -62,21 +65,27 @@ public class IPAccessRestrictionMiddleware
 
         var requestPath = context.Request.Path;
 
-        var excludePaths = _config?.ExcludePaths?.Split(separator, StringSplitOptions.RemoveEmptyEntries);
-        var includePaths = _config?.IncludePaths?.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+        var excludePaths = _config?.ExcludePaths ?? [];
+        var includePaths = _config?.IncludePaths ?? [];
 
-        var isIncludePathMatch = includePaths != null && includePaths.Length > 0 && Array.Exists(includePaths, includePath => requestPath.StartsWithSegments(includePath.Trim()));
-        var isExcludePathMatch = excludePaths != null && excludePaths.Length > 0 && Array.Exists(excludePaths, excludePath => requestPath.StartsWithSegments(excludePath.Trim()));
+        var isIncludePathMatch = includePaths.Any(includePath => requestPath.StartsWithSegments(includePath.Trim()));
+        var isExcludePathMatch = excludePaths.Any(excludePath => requestPath.StartsWithSegments(excludePath.Trim()));
 
-        if ((isIncludePathMatch) || (excludePaths == null || !isExcludePathMatch))
+
+        if ((isIncludePathMatch) || (excludePaths.Length == 0 || !isExcludePathMatch))
         {
             var clientIp = iPAccessRestrictionRepository.GetClientIP();
 
             if (!string.IsNullOrWhiteSpace(clientIp))
             {
-                var ipWhitelist = iPAccessRestrictionRepository.GetAllIpAddresses();
+                var ipBlacklist = iPAccessRestrictionRepository.GetBlacklistedIpAddresses();
+                proceed = !Helper.IsOnList(ipBlacklist, clientIp);
+                if (proceed)
+                {
+                    var ipWhitelist = iPAccessRestrictionRepository.GetWhitelistedIpAddresses();
 
-                proceed = Helper.IsWhitelisted(ipWhitelist, clientIp);
+                    proceed = Helper.IsOnList(ipWhitelist, clientIp);
+                }
 
                 if (_config != null && !proceed && _config.LogBlockedIP)
                     logger.LogInformation("IP {IP} blocked", clientIp);

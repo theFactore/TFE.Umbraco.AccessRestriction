@@ -108,9 +108,9 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
         return scope.Database.Fetch<IPAccessEntry>(sql);
     }
 
-    public IEnumerable<string> GetAllIpAddresses()
+    public IEnumerable<string> GetWhitelistedIpAddresses()
     {
-        var result = _globalCache.Get("GetAllIpAddresses", () =>
+        var result = _globalCache.Get("GetWhitelistedIpAddresses", () =>
         {
             using var scope = _scopeProvider.CreateScope(autoComplete: true);
 
@@ -124,7 +124,14 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 
             if (ipsFromTxtFile.Count > 0)
             {
-                return ipsFromDatabase.Concat(ipsFromTxtFile);
+                ipsFromDatabase = ipsFromDatabase.Concat(ipsFromTxtFile);
+            }
+
+            var ipsFromConfig = GetIpAddressesFromConfig(_config).ToList();
+
+            if (ipsFromConfig.Count > 0)
+            {
+                ipsFromDatabase = ipsFromDatabase.Concat(ipsFromConfig);
             }
 
             return ipsFromDatabase;
@@ -171,7 +178,7 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
             scope.Database.Insert(entry);
         }
 
-        _globalCache.ClearByKey("GetAllIpAddresses");
+        _globalCache.ClearByKey("GetWhitelistedIpAddresses");
 
         return true;
     }
@@ -191,6 +198,11 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
             return $"Attention: Using custom header {_config.CustomHeader}";
         else
             return string.Empty;
+    }
+
+    private static IEnumerable<string> GetIpAddressesFromConfig(Config? config)
+    {
+        return config?.Whitelist ?? [];
     }
 
     private static IEnumerable<string> GetIpAddressesFromTxtFile(string path)
@@ -230,10 +242,15 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
             GetIpAddressesFromTxtFile(_env.ContentRootPath);
         }
 
-        if (_ipsFromFile != null && _ipsFromFile.Any())
+        if ((_ipsFromFile != null && _ipsFromFile.Any()) || _config?.Whitelist?.Length > 0)
             return "Attention: Secondary IP whitelist in use";
         else
             return string.Empty;
+    }
+    
+    public IEnumerable<string> GetBlacklistedIpAddresses()
+    {
+        return _config?.Blacklist ?? [];
     }
 
     private string? CurrentUser()
