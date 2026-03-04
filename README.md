@@ -4,7 +4,7 @@
 [![NuGet](https://img.shields.io/nuget/vpre/TFE.Umbraco.AccessRestriction.svg)](https://www.nuget.org/packages/TFE.Umbraco.AccessRestriction)
 [![NuGet](https://img.shields.io/nuget/dt/TFE.Umbraco.AccessRestriction.svg)](https://www.nuget.org/packages/TFE.Umbraco.AccessRestriction)
 
-**TFE.Umbraco.AccessRestriction** is a IP access restriction manager for Umbraco. The package features a dashboard and editor that let's users manage whitelisted IP addresses from within the Umbraco backoffice. IP's can be added with a description and have both a creation and modified date and user.
+**TFE.Umbraco.AccessRestriction** is a IP access restriction manager for Umbraco. The package features a dashboard and editor that lets users manage whitelisted IP addresses from within the Umbraco backoffice. IPs can be added with a description and have both a creation and modified date and user.
 
 ## Getting started
 
@@ -28,7 +28,7 @@ NuGet\Install-Package TFE.Umbraco.AccessRestriction --version 17.1.0
 
 ## Umbraco Installation
 
-Before the Umbraco middleware, add the IPAccessRestrictionMiddleware to Program.cs or Startup.cs in previous versions:
+Before the Umbraco middleware, add the IPAccessRestrictionMiddleware: to Program.cs or Startup.cs in previous versions:
 
 ```C#
 app.UseMiddleware<IPAccessRestrictionMiddleware>();
@@ -83,7 +83,7 @@ If a proxy is being used, set the value of the 'CustomHeader' field to 'header' 
 
 ## Whitelist IP Addresses
 
-There are three different ways to whitelist an IP address, though the dashboard interface, by adding the IP address to WhitelistedIps.txt or by adding the IP address to the WhiteList setting in the appsettings. All methods can be used simultaneously and separately.
+There are three different ways to whitelist an IP address, through the dashboard interface, by adding the IP address to WhitelistedIps.txt or by adding the IP address to the WhiteList setting in the appsettings. All methods can be used simultaneously and separately.
 
 ### Add an IP using the Umbraco dashboard
 
@@ -118,6 +118,15 @@ To block an IP address, add it to the BlackList setting in the appsettings.
 ```C#
 "BlackList": ["192.168.1.1", "192.168.1.2", "192.168.1.3", "::1", "192.168.1.4"],
 ```
+
+### Blacklist Priority
+
+The blacklist always takes precedence over all other settings.
+
+If an IP address is present in the blacklist, it will always be blocked, even if:
+- the path is listed in `ExcludePaths`
+- the IP address is present in the whitelist
+
 
 ## Features
 

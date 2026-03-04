@@ -59,43 +59,44 @@ public class IPAccessRestrictionMiddleware
         }
     }
 
-    private bool CheckClientIP(HttpContext context, ILogger<IPAccessRestrictionMiddleware> logger, IIPAccessRestrictionRepository iPAccessRestrictionRepository)
-    {
-        var proceed = true;
+	private bool CheckClientIP(HttpContext context,	ILogger<IPAccessRestrictionMiddleware> logger, IIPAccessRestrictionRepository iPAccessRestrictionRepository)
+	{
+		var requestPath = context.Request.Path;
 
-        var requestPath = context.Request.Path;
+		var excludePaths = _config?.ExcludePaths ?? [];
+		var includePaths = _config?.IncludePaths ?? [];
 
-        var excludePaths = _config?.ExcludePaths ?? [];
-        var includePaths = _config?.IncludePaths ?? [];
+		var clientIp = iPAccessRestrictionRepository.GetClientIP();
+		if (string.IsNullOrWhiteSpace(clientIp))
+			return false;
 
-        var isIncludePathMatch = includePaths.Any(includePath => requestPath.StartsWithSegments(includePath.Trim()));
-        var isExcludePathMatch = excludePaths.Any(excludePath => requestPath.StartsWithSegments(excludePath.Trim()));
+		var ipBlacklist = iPAccessRestrictionRepository.GetBlacklistedIpAddresses();
+		if (Helper.IsOnList(ipBlacklist, clientIp))
+		{
+			if (_config?.LogBlockedIP == true)
+				logger.LogInformation("IP {IP} blocked (blacklist)", clientIp);
 
+			return false;
+		}
 
-        if ((isIncludePathMatch) || (excludePaths.Length == 0 || !isExcludePathMatch))
-        {
-            var clientIp = iPAccessRestrictionRepository.GetClientIP();
+		var isIncludePathMatch = Array.Exists(includePaths,
+			includePath => requestPath.StartsWithSegments(includePath.Trim()));
 
-            if (!string.IsNullOrWhiteSpace(clientIp))
-            {
-                var ipBlacklist = iPAccessRestrictionRepository.GetBlacklistedIpAddresses();
-                proceed = !Helper.IsOnList(ipBlacklist, clientIp);
-                if (proceed)
-                {
-                    var ipWhitelist = iPAccessRestrictionRepository.GetWhitelistedIpAddresses();
+		var isExcludePathMatch = Array.Exists(excludePaths,
+			excludePath => requestPath.StartsWithSegments(excludePath.Trim()));
 
-                    proceed = Helper.IsOnList(ipWhitelist, clientIp);
-                }
+		var shouldCheckWhitelist =
+			isIncludePathMatch || (excludePaths.Length == 0 || !isExcludePathMatch);
 
-                if (_config != null && !proceed && _config.LogBlockedIP)
-                    logger.LogInformation("IP {IP} blocked", clientIp);
-            }
-            else
-            {
-                proceed = false;
-            }
-        }
+		if (!shouldCheckWhitelist)
+			return true;
 
-        return proceed;
-    }
+		var ipWhitelist = iPAccessRestrictionRepository.GetWhitelistedIpAddresses();
+		var proceed = Helper.IsOnList(ipWhitelist, clientIp);
+
+		if (_config?.LogBlockedIP == true && !proceed)
+			logger.LogInformation("IP {IP} blocked (not on whitelist)", clientIp);
+
+		return proceed;
+	}
 }

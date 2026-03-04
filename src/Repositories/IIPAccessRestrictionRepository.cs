@@ -5,7 +5,7 @@ public interface IIPAccessRestrictionRepository
 {
     IEnumerable<IPAccessEntry?> GetAll();
 
-    IEnumerable<string> GetWhilelistedIpAddresses();
+    IEnumerable<string> GetWhitelistedIpAddresses();
     
     IEnumerable<string> GetBlacklistedIpAddresses();
 
