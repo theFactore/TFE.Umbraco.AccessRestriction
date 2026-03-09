@@ -212,33 +212,30 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 
 	private IEnumerable<string> GetIpAddressesFromTxtFile(string path)
 	{
-		var processedLines = new List<string>();
-		if (_config.UseWhitelistTxtFile)
+		if (_ipsFromFile != null)
 		{
-			if (_ipsFromFile != null)
-			{
-				return _ipsFromFile;
-			}
+			return _ipsFromFile;
+		}
 
-			try
+		var processedLines = new List<string>();
+		try
+		{
+			using StreamReader reader = new(Path.Combine(path, "WhitelistedIps.txt"));
+			while (!reader.EndOfStream)
 			{
-				using StreamReader reader = new(Path.Combine(path, "WhitelistedIps.txt"));
-				while (!reader.EndOfStream)
+				var line = reader.ReadLine()?.Split(_SplitChars, StringSplitOptions.RemoveEmptyEntries);
+
+				if (line != null && line.Length > 0)
 				{
-					var line = reader.ReadLine()?.Split(_SplitChars, StringSplitOptions.RemoveEmptyEntries);
-
-					if (line != null && line.Length > 0)
-					{
-						processedLines.Add(line[0].Trim());
-					}
+					processedLines.Add(line[0].Trim());
 				}
+			}
 
-				_ipsFromFile = processedLines.ToArray();
-			}
-			catch (Exception ex)
-			{
-				Log.Warning(ex, "WhitelistedIps.txt file cannot be found");
-			}
+			_ipsFromFile = processedLines.ToArray();
+		}
+		catch (Exception ex)
+		{
+			Log.Warning(ex, "WhitelistedIps.txt file cannot be found");
 		}
 
 		return processedLines;
@@ -246,15 +243,22 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 
 	public string CheckIpWhitelistFile()
 	{
-		if (_ipsFromFile == null)
+		if (_config?.UseWhitelistTxtFile == true)
 		{
-			GetIpAddressesFromTxtFile(_env.ContentRootPath);
+			if (_ipsFromFile == null)
+			{
+				GetIpAddressesFromTxtFile(_env.ContentRootPath);
+			}
 		}
 
 		if ((_ipsFromFile != null && _ipsFromFile.Any()) || _config?.Whitelist?.Length > 0)
+		{
 			return "Attention: Secondary IP whitelist in use";
+		}
 		else
+		{
 			return string.Empty;
+		}
 	}
 
 	public IEnumerable<string> GetBlacklistedIpAddresses()
