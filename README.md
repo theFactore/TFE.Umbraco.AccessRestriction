@@ -54,7 +54,8 @@ Add these settings to appsettings.json
     "IsCloudFlare": false,
     "CustomHeader": "",
 	"Whitelist": ["127.0.0.1"],
-	"Blacklist": []
+	"Blacklist": [],
+    "UseWhitelistTxtFile": false
   }
 ```
 
@@ -102,6 +103,8 @@ Add WhitelistedIps.txt to the root of your Umbraco project.
 ![Add an IP to the whitelist txt file](https://i.imgur.com/7zKrth7.png)
 
 IP Addresses must be line separated and to add a comment use the #.
+
+Only applicable if `UseWhitelistTxtFile` is set to `true`.
 
 ```C#
 192.168.1.1
