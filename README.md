@@ -55,7 +55,7 @@ Add these settings to appsettings.json
     "CustomHeader": "",
 	"Whitelist": ["127.0.0.1"],
 	"Blacklist": [],
-    "UseWhitelistTxtFile": false
+    "ShowConfigIpsInBackoffice": true
   }
 ```
 
@@ -104,8 +104,6 @@ Add WhitelistedIps.txt to the root of your Umbraco project.
 
 IP Addresses must be line separated and to add a comment use the #.
 
-Only applicable if `UseWhitelistTxtFile` is set to `true`.
-
 ```C#
 192.168.1.1
 192.168.1.2 #John
@@ -113,6 +111,9 @@ Only applicable if `UseWhitelistTxtFile` is set to `true`.
 ::1
 192.168.1.4 #Hank
 ```
+
+### Umbraco backoffice dashboard
+If `ShowConfigIpsInBackoffice` is set to `true` (by default) it will show the IP adresses from the `appsettings.json` or the `WhitelistedIps.txt` in the dashboard.
 
 ## Block IP Addresses
 

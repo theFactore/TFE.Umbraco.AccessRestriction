@@ -36,7 +36,7 @@ export class IPAccessRestrictionContext extends UmbControllerBase {
   }
 
   _handleResultError(result: any) {
-    if (!result) {
+    if (!result && result !== "") {
       throw new Error('Received undefined data');
     }
     if (result.error) {

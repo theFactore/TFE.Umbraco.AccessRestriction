@@ -3,10 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using Serilog.Core;
-using System.Security.Cryptography.Xml;
 using TFE.Umbraco.AccessRestriction.Constants;
-using TFE.Umbraco.AccessRestriction.Exceptions;
 using TFE.Umbraco.AccessRestriction.Middleware;
 using TFE.Umbraco.AccessRestriction.Models;
 using Umbraco.Cms.Core.Cache;
@@ -25,8 +22,8 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 	private readonly IWebHostEnvironment _env;
 	private readonly IBackOfficeSecurityAccessor _backOfficeSecurityAccessor;
 
-	private IEnumerable<string>? _ipsFromFile = null;
-	private readonly string[] _SplitChars = { "#", "," };
+	private IEnumerable<WhitelistedIp>? _ipsFromFile = null;
+	private readonly string[] _SplitChars = { "#" };
 
 	public IPAccessRestrictionRepository(
 		IScopeProvider scopeProvider,
@@ -102,11 +99,33 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 
 	public IEnumerable<IPAccessEntry> GetAll()
 	{
+		var resultEntries = Enumerable.Empty<IPAccessEntry>();
+
 		using var scope = _scopeProvider.CreateScope();
-
 		var sql = scope.SqlContext.Sql().Select("*").From<IPAccessEntry>().Where<IPAccessEntry>(x => !x.IsDeleted);
+		var databaseEntries = scope.Database.Fetch<IPAccessEntry>(sql);
+		if (databaseEntries != null && databaseEntries.Any())
+		{
+			databaseEntries.ForEach(e => e.IsEditable = true);
+			resultEntries = resultEntries.Concat(databaseEntries);
+		}
 
-		return scope.Database.Fetch<IPAccessEntry>(sql);
+		if (_config?.ShowConfigIpsInBackoffice == true)
+		{
+			var ipsFromConfig = GetIpAddressesFromConfig(_config);
+			if (ipsFromConfig != null && ipsFromConfig.Any())
+			{
+				resultEntries = resultEntries.Concat(ipsFromConfig.Select(ifc => new IPAccessEntry { Ip = ifc, Description = "(appsettings.json)" }));
+			}
+
+			var ipsFromTxtFile = GetIpAddressesFromTxtFile();
+			if (ipsFromTxtFile != null && ipsFromTxtFile.Any())
+			{
+				resultEntries = resultEntries.Concat(ipsFromTxtFile.Select(iftf => new IPAccessEntry { Ip = iftf.Ip, Description = $"{(!string.IsNullOrEmpty(iftf.Description) ? $"{iftf.Description} " : string.Empty)}(whitelistedips.txt)" }));
+			}
+		}
+
+		return resultEntries;
 	}
 
 	public IEnumerable<string> GetWhitelistedIpAddresses()
@@ -125,13 +144,10 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 				resultIpList = resultIpList.Concat(ipsFromDatabase);
 			}
 
-			if (_config?.UseWhitelistTxtFile == true)
+			var ipsFromTxtFile = GetIpAddressesFromTxtFile().ToList();
+			if (ipsFromTxtFile != null && ipsFromTxtFile.Any())
 			{
-				var ipsFromTxtFile = GetIpAddressesFromTxtFile(_env.ContentRootPath).ToList();
-				if (ipsFromTxtFile.Count > 0)
-				{
-					resultIpList = resultIpList.Concat(ipsFromTxtFile);
-				}
+				resultIpList = resultIpList.Concat(ipsFromTxtFile.Select(iftf => iftf.Ip));
 			}
 
 			var ipsFromConfig = GetIpAddressesFromConfig(_config).ToList();
@@ -196,13 +212,21 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 		}
 
 		if (_config.IsCloudflare && !string.IsNullOrWhiteSpace(_config.CustomHeader))
+		{
 			return "Attention: Please choose Cloudflare or a custom header";
+		}
 		else if (_config.IsCloudflare)
+		{
 			return "Attention: Cloudflare configuration is active";
+		}
 		else if (!string.IsNullOrWhiteSpace(_config.CustomHeader))
+		{
 			return $"Attention: Using custom header {_config.CustomHeader}";
+		}
 		else
+		{
 			return string.Empty;
+		}
 	}
 
 	private IEnumerable<string> GetIpAddressesFromConfig(Config? config)
@@ -210,32 +234,35 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 		return config?.Whitelist ?? [];
 	}
 
-	private IEnumerable<string> GetIpAddressesFromTxtFile(string path)
+	private IEnumerable<WhitelistedIp> GetIpAddressesFromTxtFile()
 	{
-		if (_ipsFromFile != null)
+		var whitelistedIpFilePath = Path.Combine(_env.ContentRootPath, "WhitelistedIps.txt");
+		var processedLines = new List<WhitelistedIp>();
+		if (File.Exists(whitelistedIpFilePath))
 		{
-			return _ipsFromFile;
-		}
-
-		var processedLines = new List<string>();
-		try
-		{
-			using StreamReader reader = new(Path.Combine(path, "WhitelistedIps.txt"));
-			while (!reader.EndOfStream)
+			if (_ipsFromFile != null)
 			{
-				var line = reader.ReadLine()?.Split(_SplitChars, StringSplitOptions.RemoveEmptyEntries);
-
-				if (line != null && line.Length > 0)
-				{
-					processedLines.Add(line[0].Trim());
-				}
+				return _ipsFromFile;
 			}
 
-			_ipsFromFile = processedLines.ToArray();
-		}
-		catch (Exception ex)
-		{
-			Log.Warning(ex, "WhitelistedIps.txt file cannot be found");
+			try
+			{
+				using StreamReader reader = new(whitelistedIpFilePath);
+				while (!reader.EndOfStream)
+				{
+					var line = reader.ReadLine()?.Split(_SplitChars, StringSplitOptions.RemoveEmptyEntries);
+					if (line != null && line.Length > 0)
+					{
+						processedLines.Add(new WhitelistedIp { Ip = line[0].Trim(), Description = line.Length > 1 ? line[1].Trim() : null });
+					}
+				}
+
+				_ipsFromFile = processedLines.ToArray();
+			}
+			catch (Exception ex)
+			{
+				Log.Warning(ex, "WhitelistedIps.txt file cannot be found");
+			}
 		}
 
 		return processedLines;

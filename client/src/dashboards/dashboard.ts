@@ -68,7 +68,7 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
 
   private _formatDate(dateString?: string): string {
     if (!dateString) {
-      return 'N/A';
+      return '';
     }
     const options: Intl.DateTimeFormatOptions = {
       year: 'numeric',
@@ -127,12 +127,7 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
             <uui-button
               label="Add current IP address"
               look="primary"
-              @click="${() =>
-                this._openModal({
-                  id: '',
-                  ip: this.clientIP,
-                  description: '',
-                })}"
+              @click="${() => this._openModal({ id: '', ip: this.clientIP, description: '', })}"
               >+ Add</uui-button
             >
           </div>
@@ -154,7 +149,7 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
           </uui-table-head>
 
           ${this.ipEntries?.map(
-            (ipEntry) => html`
+      (ipEntry) => html`
               <uui-table-row>
                 <uui-table-cell>${ipEntry.ip}</uui-table-cell>
                 <uui-table-cell>${ipEntry.description}</uui-table-cell>
@@ -166,6 +161,7 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
                     look="primary"
                     color="default"
                     @click="${() => this._handleEditClick(ipEntry)}"
+                    ?disabled="${!ipEntry.isEditable}"
                     >Edit</uui-button
                   >
                   <uui-button
@@ -173,12 +169,13 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
                     look="primary"
                     color="danger"
                     @click="${() => this._handleDeleteClick(ipEntry)}"
+                    ?disabled="${!ipEntry.isEditable}"
                     >Delete</uui-button
                   >
                 </uui-table-cell>
               </uui-table-row>
             `,
-          )}
+    )}
         </uui-table>
       </div>
     `;

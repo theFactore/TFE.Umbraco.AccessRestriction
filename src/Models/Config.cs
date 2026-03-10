@@ -23,6 +23,5 @@ public class Config
 	public int? HttpStatusCode { get; set; }
 
 	public string? HttpResponseMessage { get; set; }
-
-	public bool UseWhitelistTxtFile { get; set; }
+	public bool ShowConfigIpsInBackoffice { get; set; } = true;
 }
