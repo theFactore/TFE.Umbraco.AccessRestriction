@@ -26,6 +26,9 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
       this.observe(_instance.ipWhitelisteTextFileInUse, (_ipWhitelisteTextFileInUse) => {
         this.ipWhitelisteTextFileInUse = _ipWhitelisteTextFileInUse;
       });
+      if (!_instance) {
+        return;
+      }
 
       this.observe(_instance.ipEntries, (_ipEntries) => {
         this.ipEntries = _ipEntries;
@@ -44,7 +47,6 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
       });
 
       this.observe(_instance.isIpInList, (_isIpInList) => {
-        console.log('Observed isIpInList:', _isIpInList);
         this.isIpInList = _isIpInList;
       });
 

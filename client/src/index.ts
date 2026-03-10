@@ -13,9 +13,12 @@ export const onInit: UmbEntryPointOnInit = (_host, extensionRegistry) => {
   extensionRegistry.registerMany([...dashboardManifests, ...modalManifests, ...contextManifests]);
 
   _host.consumeContext(UMB_AUTH_CONTEXT, (_auth) => {
+    if (!_auth) {
+      return;
+    }
     const umbOpenApi = _auth.getOpenApiConfiguration();
-    OpenAPI.BASE = umbOpenApi.base;
-    OpenAPI.TOKEN = umbOpenApi.token;
-    OpenAPI.CREDENTIALS = umbOpenApi.credentials;
+    OpenAPI.BASE = umbOpenApi.base ?? '';
+    OpenAPI.TOKEN = umbOpenApi.token as unknown as string ?? undefined;
+    OpenAPI.CREDENTIALS = umbOpenApi.credentials ?? 'include';
   });
 };
