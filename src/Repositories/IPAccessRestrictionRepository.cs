@@ -241,26 +241,6 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 		return processedLines;
 	}
 
-	public string CheckIpWhitelistFile()
-	{
-		if (_config?.UseWhitelistTxtFile == true)
-		{
-			if (_ipsFromFile == null)
-			{
-				GetIpAddressesFromTxtFile(_env.ContentRootPath);
-			}
-		}
-
-		if ((_ipsFromFile != null && _ipsFromFile.Any()) || _config?.Whitelist?.Length > 0)
-		{
-			return "Attention: Secondary IP whitelist in use";
-		}
-		else
-		{
-			return string.Empty;
-		}
-	}
-
 	public IEnumerable<string> GetBlacklistedIpAddresses()
 	{
 		return _config?.Blacklist ?? [];

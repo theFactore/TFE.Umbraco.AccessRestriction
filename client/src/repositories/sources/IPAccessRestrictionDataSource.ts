@@ -11,10 +11,6 @@ export class IPAccessRestrictionDataSource implements IIPAccessRestrictionDataSo
     this.#host = host;
   }
 
-  async checkIpWhitelistFile(): Promise<UmbDataSourceResponse<string>> {
-    return await tryExecuteAndNotify(this.#host, V1Service.getUmbracoApiV1IpAccessRestrictionApiCheckIpWhitelistFile());
-  }
-
   async delete(id: string): Promise<UmbDataSourceResponse<boolean>> {
     const deleteOperation = V1Service.deleteUmbracoApiV1IpAccessRestrictionApiDelete(id)
       .then(() => true)

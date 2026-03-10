@@ -10,7 +10,6 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
   modalManagerContext?: typeof UMB_MODAL_MANAGER_CONTEXT.TYPE;
   context?: IPAccessRestrictionContext;
 
-  @property({ type: String }) ipWhitelisteTextFileInUse?: string;
   @property({ type: Array }) ipEntries?: IpEntry[];
   @property({ type: Array }) ips?: string[];
   @property({ type: String }) clientIP?: string;
@@ -22,10 +21,6 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
     super();
     this.consumeContext(IP_ACCESS_RESTRICTION_CONTEXT_TOKEN, (_instance) => {
       this.context = _instance;
-
-      this.observe(_instance.ipWhitelisteTextFileInUse, (_ipWhitelisteTextFileInUse) => {
-        this.ipWhitelisteTextFileInUse = _ipWhitelisteTextFileInUse;
-      });
       if (!_instance) {
         return;
       }
@@ -64,7 +59,6 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
     super.connectedCallback();
 
     if (this.context != null) {
-      this.context.checkIpWhitelistFile();
       this.context.getAllIpAccessEntries();
       this.context.getHeaderInfo();
       this.context.checkIpInList();
@@ -125,11 +119,6 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
           <div id="header-alert" ?hidden="${!this.customHeaderInfo}">
             <uui-icon name="alert" style="color: orange; margin-bottom: 4px;"></uui-icon>
             <span>${this.customHeaderInfo}</span>
-          </div>
-
-          <div id="file-alert" ?hidden="${!this.ipWhitelisteTextFileInUse}">
-            <uui-icon name="alert" style="color: orange; margin-bottom: 4px;"></uui-icon>
-            <span>${this.ipWhitelisteTextFileInUse}</span>
           </div>
 
           <div id="ip-alert" ?hidden="${this.isIpInList}">

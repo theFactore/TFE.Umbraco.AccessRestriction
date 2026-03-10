@@ -8,19 +8,6 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class V1Service {
   /**
-   * @returns string OK
-   * @throws ApiError
-   */
-  public static getUmbracoApiV1IpAccessRestrictionApiCheckIpWhitelistFile(): CancelablePromise<string> {
-    return __request(OpenAPI, {
-      method: 'GET',
-      url: '/umbraco/api/v1/IPAccessRestrictionApi/CheckIpWhitelistFile',
-      errors: {
-        404: `Not Found`,
-      },
-    });
-  }
-  /**
    * @param id
    * @returns void
    * @throws ApiError
