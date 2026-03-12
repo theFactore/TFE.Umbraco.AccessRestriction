@@ -11,6 +11,7 @@ export type IPAccessEntry = {
     modified?: string | null;
     modifiedBy?: string | null;
     isDeleted?: boolean;
+    isEditable?: boolean;
 };
 
 export default IPAccessEntry;

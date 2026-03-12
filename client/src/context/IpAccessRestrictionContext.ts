@@ -9,9 +9,6 @@ import { UmbStringState, UmbArrayState, UmbBooleanState } from '@umbraco-cms/bac
 export class IPAccessRestrictionContext extends UmbControllerBase {
   repository: IPAccessRestrictionRepository;
 
-  #checkIpWhitelistFile = new UmbStringState('');
-  public readonly ipWhitelisteTextFileInUse = this.#checkIpWhitelistFile.asObservable();
-
   #ipEntries = new UmbArrayState(<Array<IPAccessEntry>>[], (x) => x.id);
   public readonly ipEntries = this.#ipEntries.asObservable();
 
@@ -39,7 +36,7 @@ export class IPAccessRestrictionContext extends UmbControllerBase {
   }
 
   _handleResultError(result: any) {
-    if (!result) {
+    if (!result && result !== "") {
       throw new Error('Received undefined data');
     }
     if (result.error) {
@@ -60,17 +57,6 @@ export class IPAccessRestrictionContext extends UmbControllerBase {
     } else {
       console.error('Your IP address is not on the list');
       this.#isIpInList.setValue(false);
-    }
-  }
-
-  async checkIpWhitelistFile() {
-    try {
-      const result = await this.repository.checkIpWhitelistFile();
-      const data = this._handleResultError(result);
-
-      this.#checkIpWhitelistFile?.setValue(data);
-    } catch (error) {
-      console.error('Error in checkIpWhitelistFile:', error);
     }
   }
 

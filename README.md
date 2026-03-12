@@ -54,7 +54,8 @@ Add these settings to appsettings.json
     "IsCloudFlare": false,
     "CustomHeader": "",
 	"Whitelist": ["127.0.0.1"],
-	"Blacklist": []
+	"Blacklist": [],
+    "ShowConfigIpsInBackoffice": true
   }
 ```
 
@@ -110,6 +111,9 @@ IP Addresses must be line separated and to add a comment use the #.
 ::1
 192.168.1.4 #Hank
 ```
+
+### Umbraco backoffice dashboard
+If `ShowConfigIpsInBackoffice` is set to `true` (by default) it will show the IP adresses from the `appsettings.json` or the `WhitelistedIps.txt` in the dashboard.
 
 ## Block IP Addresses
 

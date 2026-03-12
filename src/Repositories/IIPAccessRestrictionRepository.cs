@@ -1,25 +1,24 @@
 ﻿using TFE.Umbraco.AccessRestriction.Models;
 
 namespace TFE.Umbraco.AccessRestriction.Repositories;
+
 public interface IIPAccessRestrictionRepository
 {
-    IEnumerable<IPAccessEntry?> GetAll();
+	IEnumerable<IPAccessEntry?> GetAll();
 
-    IEnumerable<string> GetWhitelistedIpAddresses();
-    
-    IEnumerable<string> GetBlacklistedIpAddresses();
+	IEnumerable<string> GetWhitelistedIpAddresses();
 
-    IPAccessEntry? GetbyId(Guid id);
+	IEnumerable<string> GetBlacklistedIpAddresses();
 
-    bool Save(IPAccessEntry entry);
+	IPAccessEntry? GetbyId(Guid id);
 
-    bool Delete(Guid id);
+	bool Save(IPAccessEntry entry);
 
-    string? GetClientIP();
+	bool Delete(Guid id);
 
-    string GetHeaderInfo();
+	string? GetClientIP();
 
-    string CheckIpWhitelistFile();
-    
-    string GetInstallationInfo();
+	string GetHeaderInfo();
+
+	string GetInstallationInfo();
 }

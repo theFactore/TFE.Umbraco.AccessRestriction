@@ -11,10 +11,6 @@ export class IPAccessRestrictionRepository extends UmbControllerBase {
     this.#dataSource = new IPAccessRestrictionDataSource(this);
   }
 
-  async checkIpWhitelistFile() {
-    return this.#dataSource.checkIpWhitelistFile();
-  }
-
   async deleteIpAccessEntry(id: string) {
     return this.#dataSource.delete(id);
   }

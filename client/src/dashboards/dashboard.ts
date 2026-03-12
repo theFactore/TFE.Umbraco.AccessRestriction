@@ -10,7 +10,6 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
   modalManagerContext?: typeof UMB_MODAL_MANAGER_CONTEXT.TYPE;
   context?: IPAccessRestrictionContext;
 
-  @property({ type: String }) ipWhitelisteTextFileInUse?: string;
   @property({ type: Array }) ipEntries?: IpEntry[];
   @property({ type: Array }) ips?: string[];
   @property({ type: String }) clientIP?: string;
@@ -22,10 +21,9 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
     super();
     this.consumeContext(IP_ACCESS_RESTRICTION_CONTEXT_TOKEN, (_instance) => {
       this.context = _instance;
-
-      this.observe(_instance.ipWhitelisteTextFileInUse, (_ipWhitelisteTextFileInUse) => {
-        this.ipWhitelisteTextFileInUse = _ipWhitelisteTextFileInUse;
-      });
+      if (!_instance) {
+        return;
+      }
 
       this.observe(_instance.ipEntries, (_ipEntries) => {
         this.ipEntries = _ipEntries;
@@ -44,7 +42,6 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
       });
 
       this.observe(_instance.isIpInList, (_isIpInList) => {
-        console.log('Observed isIpInList:', _isIpInList);
         this.isIpInList = _isIpInList;
       });
 
@@ -62,7 +59,6 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
     super.connectedCallback();
 
     if (this.context != null) {
-      this.context.checkIpWhitelistFile();
       this.context.getAllIpAccessEntries();
       this.context.getHeaderInfo();
       this.context.checkIpInList();
@@ -72,7 +68,7 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
 
   private _formatDate(dateString?: string): string {
     if (!dateString) {
-      return 'N/A';
+      return '';
     }
     const options: Intl.DateTimeFormatOptions = {
       year: 'numeric',
@@ -125,23 +121,13 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
             <span>${this.customHeaderInfo}</span>
           </div>
 
-          <div id="file-alert" ?hidden="${!this.ipWhitelisteTextFileInUse}">
-            <uui-icon name="alert" style="color: orange; margin-bottom: 4px;"></uui-icon>
-            <span>${this.ipWhitelisteTextFileInUse}</span>
-          </div>
-
           <div id="ip-alert" ?hidden="${this.isIpInList}">
             <uui-icon name="alert" style="color: orange; margin-bottom: 10px;"></uui-icon>
             <span>Your IP address is not on the list</span>
             <uui-button
               label="Add current IP address"
               look="primary"
-              @click="${() =>
-                this._openModal({
-                  id: '',
-                  ip: this.clientIP,
-                  description: '',
-                })}"
+              @click="${() => this._openModal({ id: '', ip: this.clientIP, description: '', })}"
               >+ Add</uui-button
             >
           </div>
@@ -163,7 +149,7 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
           </uui-table-head>
 
           ${this.ipEntries?.map(
-            (ipEntry) => html`
+      (ipEntry) => html`
               <uui-table-row>
                 <uui-table-cell>${ipEntry.ip}</uui-table-cell>
                 <uui-table-cell>${ipEntry.description}</uui-table-cell>
@@ -175,6 +161,7 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
                     look="primary"
                     color="default"
                     @click="${() => this._handleEditClick(ipEntry)}"
+                    ?disabled="${!ipEntry.isEditable}"
                     >Edit</uui-button
                   >
                   <uui-button
@@ -182,12 +169,13 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
                     look="primary"
                     color="danger"
                     @click="${() => this._handleDeleteClick(ipEntry)}"
+                    ?disabled="${!ipEntry.isEditable}"
                     >Delete</uui-button
                   >
                 </uui-table-cell>
               </uui-table-row>
             `,
-          )}
+    )}
         </uui-table>
       </div>
     `;

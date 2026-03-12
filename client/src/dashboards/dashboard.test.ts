@@ -97,7 +97,6 @@ describe('DashboardElement', () => {
   });
 
   it('should have default properties', () => {
-    expect(dashboard.ipWhitelisteTextFileInUse);
     expect(dashboard.ipEntries);
     expect(dashboard.ips);
     expect(dashboard.clientIP);
@@ -152,23 +151,6 @@ describe('DashboardElement', () => {
     const div = dashboard.shadowRoot?.querySelector('#header-alert');
     expect(div).not.to.have.attribute('hidden');
     expect(div?.querySelector('span')?.textContent).to.equal('Important Info');
-  });
-
-  it('hides the file-alert div when no file is in use', async () => {
-    dashboard.ipWhitelisteTextFileInUse = '';
-    await dashboard.updateComplete;
-
-    const div = dashboard.shadowRoot?.querySelector('#file-alert');
-    expect(div).to.have.attribute('hidden');
-  });
-
-  it('shows file-alert div when a file is in use', async () => {
-    dashboard.ipWhitelisteTextFileInUse = 'whitelist.txt';
-    await dashboard.updateComplete;
-
-    const div = dashboard.shadowRoot?.querySelector('#file-alert');
-    expect(div).not.to.have.attribute('hidden');
-    expect(div?.querySelector('span')?.textContent).to.equal('whitelist.txt');
   });
 
   it('hides the IP not in list div when isIpInList is true', async () => {
