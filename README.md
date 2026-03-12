@@ -217,4 +217,7 @@ This project is maintained by Henri Hessels and contributors. If you have any qu
 
 ## Contributors
 
-Thanks to Ernst Jan Feenstra for the Umbraco 17 upgrade.
+Thanks to the following people for their contributions:
+
+- Ernst Jan Feenstra
+- Timo Schraa
