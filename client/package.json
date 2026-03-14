@@ -10,7 +10,7 @@
     "watch": "vite build --watch",
     "test": "web-test-runner",
     "test:watch": "web-test-runner --watch",
-    "generate:api": "openapi --input https://localhost:44394/umbraco/swagger/v1/swagger.json --output src/api --client fetch"
+    "generate:api": "NODE_TLS_REJECT_UNAUTHORIZED=0 openapi --input https://localhost:44394/umbraco/swagger/IPAccessRestrictionAPI/swagger.json --output src/api --client fetch"
   },
   "dependencies": {
     "@umbraco-ui/uui-button-group": "^1.8.0",
