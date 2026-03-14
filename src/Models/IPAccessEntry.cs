@@ -42,6 +42,7 @@ public class IPAccessEntry
 	[JsonPropertyName("isDeleted")]
 	public bool IsDeleted { get; set; }
 
+	[Column("IsEditable")]
 	[JsonPropertyName("isEditable")]
 	public bool IsEditable { get; set; }
 }
