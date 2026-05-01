@@ -18,7 +18,7 @@
 		<Product>TFE.Umbraco.AccessRestriction</Product>
 		<Title>TFE.Umbraco.AccessRestriction</Title>
 		<Description>IP access restriction manager for Umbraco CMS </Description>
-		<Version>17.2.1</Version>
+		<Version>17.3.5</Version>
 		<Authors>Rutger Dijkstra</Authors>
 		<PackageTags>Umbraco, Plugin, Package, Access restriction, Ip Whitelist, Ip Blacklist, Umbraco-Marketplace, TFE, theFactor.e</PackageTags>
 		<PackageProjectUrl></PackageProjectUrl>
@@ -31,9 +31,11 @@
 
 	 <!--Include NuGet dependencies-->
 	<ItemGroup>
-		<PackageReference Include="Umbraco.Cms.Api.Management" Version="[17.0.2,)" />
-		<PackageReference Include="Umbraco.Cms.Web.Website" Version="[17.0.2,)" />
-		<PackageReference Include="Umbraco.Cms.Web.Common" Version="[17.0.2,)" />
+		<PackageReference Include="MailKit" Version="4.16.0" />
+		<PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.3" />
+		<PackageReference Include="Umbraco.Cms.Api.Management" Version="17.3.5" />
+		<PackageReference Include="Umbraco.Cms.Web.Website" Version="17.3.5" />
+		<PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.5" />
 	</ItemGroup>
 
 	<!--Exclude transpiled javascript files from SonarCloud-->
