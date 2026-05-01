@@ -16,8 +16,6 @@ public static class Constants
     public static class Migration
     {
         public const string Name = Prefix + "IPAccessRestriction";
-
-        public const string TargetState = Prefix + "IPAccessRestriction_1";
     }
 }
 

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Serilog.Core;
 using TFE.Umbraco.AccessRestriction.Helpers;
 using TFE.Umbraco.AccessRestriction.Models;
 using TFE.Umbraco.AccessRestriction.Repositories;
@@ -14,8 +13,7 @@ public class IPAccessRestrictionMiddleware
     private readonly IRuntimeState _runtimeState;
     private readonly RequestDelegate _next;
     private readonly Config? _config;
-    private static readonly string[] separator = [","];
-    public static bool IsRegistered { get; private set; } = false;
+      public static bool IsRegistered { get; private set; } = false;
 
     public IPAccessRestrictionMiddleware(IRuntimeState runtimeState, RequestDelegate next, IConfiguration config, ILogger<IPAccessRestrictionMiddleware> logger)
     {
