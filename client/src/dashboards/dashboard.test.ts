@@ -45,6 +45,8 @@ describe('DashboardElement', () => {
         description: 'Home',
         modified: '2024-07-30 13:51:57.8630594',
         modifiedBy: 'Rutger',
+        isDeleted: false,
+        isEditable: true,
       },
       {
         id: '58B69078-7F0E-4059-95FC-AAE24E93E764',
@@ -52,6 +54,8 @@ describe('DashboardElement', () => {
         description: 'Office',
         modified: '2024-08-02',
         modifiedBy: 'Admin',
+        isDeleted: false,
+        isEditable: true,
       },
     ];
 

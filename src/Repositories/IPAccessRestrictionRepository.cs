@@ -196,6 +196,7 @@ public class IPAccessRestrictionRepository : IIPAccessRestrictionRepository
 			entry.CreatedBy = entry.ModifiedBy;
 			entry.Created = entry.Modified;
 			entry.IsDeleted = false;
+			entry.IsEditable = true;
 			scope.Database.Insert(entry);
 		}
 

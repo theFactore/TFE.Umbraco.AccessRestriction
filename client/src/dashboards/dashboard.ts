@@ -3,14 +3,14 @@ import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
 import { IP_ACCESS_RESTRICTION_CONTEXT_TOKEN, IPAccessRestrictionContext } from '@context/IpAccessRestrictionContext';
 import { IP_ENTRY_MODAL_TOKEN } from '@dialogs/modals/IpEntryModalToken.ts';
 import { UMB_MODAL_MANAGER_CONTEXT } from '@umbraco-cms/backoffice/modal';
-import IpEntry, { IPAccessEntry } from '@models/IPAccessEntry.ts';
+import { IPAccessEntry } from '@models/IPAccessEntry.ts';
 
 @customElement('dashboard-element')
 export class DashboardElement extends UmbElementMixin(LitElement) {
   modalManagerContext?: typeof UMB_MODAL_MANAGER_CONTEXT.TYPE;
   context?: IPAccessRestrictionContext;
 
-  @property({ type: Array }) ipEntries?: IpEntry[];
+  @property({ type: Array }) ipEntries?: IPAccessEntry[];
   @property({ type: Array }) ips?: string[];
   @property({ type: String }) clientIP?: string;
   @property({ type: String }) customHeaderInfo?: string;
@@ -78,7 +78,7 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
     return new Date(dateString).toLocaleDateString('en-US', options);
   }
 
-  _openModal(ipEntry?: IpEntry) {
+  _openModal(ipEntry?: IPAccessEntry) {
     this.modalManagerContext?.open(this, IP_ENTRY_MODAL_TOKEN, {
       data: {
         ipEntry,
@@ -127,7 +127,7 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
             <uui-button
               label="Add current IP address"
               look="primary"
-              @click="${() => this._openModal({ id: '', ip: this.clientIP, description: '', })}"
+              @click="${() => this._openModal({ id: '', ip: this.clientIP, description: '', isDeleted: false, isEditable: true })}"
               >+ Add</uui-button
             >
           </div>

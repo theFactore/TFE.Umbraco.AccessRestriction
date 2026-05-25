@@ -3,15 +3,14 @@
 /* tslint:disable */
 /* eslint-disable */
 export type IPAccessEntry = {
-    id?: string;
+    id: string;
     ip?: string | null;
     description?: string | null;
     created?: string | null;
     createdBy?: string | null;
     modified?: string | null;
     modifiedBy?: string | null;
-    isDeleted?: boolean;
-    isEditable?: boolean;
+    isDeleted: boolean;
+    isEditable: boolean;
 };
 
-export default IPAccessEntry;

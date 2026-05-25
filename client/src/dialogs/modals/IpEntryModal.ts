@@ -65,13 +65,12 @@ export default class IpEntryModal
     }
 
     const ipEntry: IPAccessEntry = {
+      id: this.id || crypto.randomUUID(),
       ip: this.ip,
       description: this.description,
+      isDeleted: false,
+      isEditable: true,
     };
-
-    if (this.id) {
-      ipEntry.id = this.id;
-    }
 
     try {
       if (this.#accessRestrictionContext) {

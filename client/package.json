@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "watch": "vite build --watch",
     "test": "web-test-runner",
-    "test:watch": "web-test-runner --watch"
+    "test:watch": "web-test-runner --watch",
+    "generate:api": "NODE_TLS_REJECT_UNAUTHORIZED=0 openapi --input https://localhost:44394/umbraco/swagger/IPAccessRestrictionAPI/swagger.json --output src/api --client fetch"
   },
   "dependencies": {
     "@umbraco-ui/uui-button-group": "^1.8.0",
@@ -24,6 +25,7 @@
     "@web/test-runner": "^0.18.2",
     "@web/test-runner-playwright": "^0.11.0",
     "eslint": "^9.7.0",
+    "openapi-typescript-codegen": "^0.29.0",
     "playwright": "^1.45.3",
     "sinon": "^18.0.0",
     "typescript": "^5.2.2",
