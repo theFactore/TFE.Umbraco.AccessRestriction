@@ -184,7 +184,7 @@ const y = {
   var e;
   if (t.body !== void 0)
     return (e = t.mediaType) != null && e.includes("/json") ? JSON.stringify(t.body) : G(t.body) || z(t.body) || ie(t.body) ? t.body : JSON.stringify(t.body);
-}, De = async (t, e, s, r, n, o, a) => {
+}, $e = async (t, e, s, r, n, o, a) => {
   const c = new AbortController(), R = {
     headers: o,
     body: r ?? n,
@@ -192,7 +192,7 @@ const y = {
     signal: c.signal
   };
   return a(() => c.abort()), await fetch(s, R);
-}, $e = (t, e) => {
+}, De = (t, e) => {
   if (e) {
     const s = t.headers.get(e);
     if (G(s))
@@ -238,7 +238,7 @@ const y = {
   try {
     const o = Te(t, e), a = Pe(e), c = Oe(e), R = await xe(t, e);
     if (!n.isCancelled) {
-      const S = await De(t, e, o, c, a, R, n), ae = await Ue(S), ce = $e(S, e.responseHeader), J = {
+      const S = await $e(t, e, o, c, a, R, n), ae = await Ue(S), ce = De(S, e.responseHeader), J = {
         url: o,
         ok: S.ok,
         status: S.status,
@@ -546,7 +546,7 @@ const B = new ye(
     size: "small"
   }
 });
-var Ne = Object.defineProperty, Be = Object.getOwnPropertyDescriptor, D = (t, e, s, r) => {
+var Ne = Object.defineProperty, Be = Object.getOwnPropertyDescriptor, $ = (t, e, s, r) => {
   for (var n = r > 1 ? void 0 : r ? Be(e, s) : e, o = t.length - 1, a; o >= 0; o--)
     (a = t[o]) && (n = (r ? a(e, s, n) : a(n)) || n);
   return r && n && Ne(e, s, n), n;
@@ -692,25 +692,25 @@ b.styles = ee`
       align-items: center;
     }
   `;
-D([
+$([
   h({ type: Array })
 ], b.prototype, "ipEntries", 2);
-D([
+$([
   h({ type: Array })
 ], b.prototype, "ips", 2);
-D([
+$([
   h({ type: String })
 ], b.prototype, "clientIP", 2);
-D([
+$([
   h({ type: String })
 ], b.prototype, "customHeaderInfo", 2);
-D([
+$([
   h({ type: Boolean })
 ], b.prototype, "isIpInList", 2);
-D([
+$([
   h({ type: String })
 ], b.prototype, "installationInfo", 2);
-b = D([
+b = $([
   te("dashboard-element")
 ], b);
 const He = b, Me = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
@@ -726,11 +726,11 @@ var Le = Object.defineProperty, qe = Object.getOwnPropertyDescriptor, ne = (t) =
   for (var n = r > 1 ? void 0 : r ? qe(e, s) : e, o = t.length - 1, a; o >= 0; o--)
     (a = t[o]) && (n = (r ? a(e, s, n) : a(n)) || n);
   return r && n && Le(e, s, n), n;
-}, oe = (t, e, s) => e.has(t) || ne("Cannot " + s), L = (t, e, s) => (oe(t, e, "read from private field"), e.get(t)), We = (t, e, s) => e.has(t) ? ne("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, s), ze = (t, e, s, r) => (oe(t, e, "write to private field"), e.set(t, s), s), $;
+}, oe = (t, e, s) => e.has(t) || ne("Cannot " + s), L = (t, e, s) => (oe(t, e, "read from private field"), e.get(t)), We = (t, e, s) => e.has(t) ? ne("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, s), ze = (t, e, s, r) => (oe(t, e, "write to private field"), e.set(t, s), s), D;
 let I = class extends se(Z) {
   constructor() {
-    super(), We(this, $), this.isValid = !1, this.errors = {}, this.id = "", this.ip = "", this.description = "", this.initialIp = "", this.consumeContext(B, (t) => {
-      ze(this, $, t);
+    super(), We(this, D), this.isValid = !1, this.errors = {}, this.id = "", this.ip = "", this.description = "", this.initialIp = "", this.consumeContext(B, (t) => {
+      ze(this, D, t);
     });
   }
   firstUpdated() {
@@ -751,14 +751,14 @@ let I = class extends se(Z) {
       return;
     }
     const e = {
-      id: this.id || crypto.randomUUID(),
+      id: this.id || "00000000-0000-0000-0000-000000000000",
       ip: this.ip,
       description: this.description,
       isDeleted: !1,
       isEditable: !0
     };
     try {
-      L(this, $) ? await L(this, $).saveIpAccessEntry(e) : console.error("Access restriction context is not available"), this._handleClose();
+      L(this, D) ? await L(this, D).saveIpAccessEntry(e) : console.error("Access restriction context is not available"), this._handleClose();
     } catch (s) {
       console.error("Failed to save IP access entry:", s);
     }
@@ -780,7 +780,7 @@ let I = class extends se(Z) {
   async _checkDuplicateIps(t) {
     var e;
     try {
-      const s = ((e = L(this, $)) == null ? void 0 : e.ips) ?? be();
+      const s = ((e = L(this, D)) == null ? void 0 : e.ips) ?? be();
       return (await Ie(s)).includes(t) && this.initialIp !== t;
     } catch (s) {
       return console.error("No duplicates found in ips observable, error:", s), !1;
@@ -865,7 +865,7 @@ let I = class extends se(Z) {
     `;
   }
 };
-$ = /* @__PURE__ */ new WeakMap();
+D = /* @__PURE__ */ new WeakMap();
 I.styles = ee`
     #id {
       display: none;

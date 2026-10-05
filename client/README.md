@@ -32,7 +32,7 @@ De bestanden in `src/api/` worden automatisch gegenereerd op basis van de Swagge
 npm run generate:api
 ```
 
-De standaard Swagger URL is `https://localhost:44394/umbraco/swagger/IPAccessRestrictionAPI/swagger.json`. Als je backend op een andere poort draait, pas de URL aan in het `generate:api` script in `package.json`.
+De standaard Swagger URL is `https://localhost:44394/umbraco/swagger/IPAccessRestrictionAPI/swagger.json`. Als je backend op een andere poort draait, pas de URL aan in `scripts/generate-api.mjs`.
 
 ### Na het genereren
 
