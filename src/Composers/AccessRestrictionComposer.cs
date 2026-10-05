@@ -11,8 +11,8 @@ public class AccessRestrictionComposer : IComposer
 {
     public void Compose(IUmbracoBuilder builder)
     {
-        builder.AddNotificationHandler<UmbracoApplicationStartingNotification, MigrationRunner>();
-        builder.Services.AddScoped<IIPAccessRestrictionRepository, IPAccessRestrictionRepository>();
+		builder.AddNotificationAsyncHandler<UmbracoApplicationStartingNotification, MigrationRunner>();
+		builder.Services.AddScoped<IIPAccessRestrictionRepository, IPAccessRestrictionRepository>();
         builder.Services.AddSingleton<Helpers.Helper>();
         builder.Services.ConfigureOptions<ConfigureSwaggerGenOptions>();
     }
