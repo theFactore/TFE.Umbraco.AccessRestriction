@@ -4,6 +4,8 @@ De frontend van het TFE.Umbraco.AccessRestriction pakket. Gebouwd met Vite, Type
 
 ## Installatie
 
+Vereist Node.js 22 vanaf versie 22.12, Node.js 24 of Node.js 26 en hoger.
+
 ```bash
 npm install
 ```
@@ -17,6 +19,8 @@ npm install
 | `npm run watch` | Bouwt automatisch opnieuw bij wijzigingen |
 | `npm run test` | Draait de tests |
 | `npm run generate:api` | Genereert de TypeScript API client vanuit de Swagger spec |
+
+Voor `npm run test` zijn Chromium en WebKit nodig. Installeer ze met `npx playwright install chromium webkit`.
 
 ## API Client genereren
 

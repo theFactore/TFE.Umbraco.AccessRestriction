@@ -1,5 +1,4 @@
-import { expect, fixture, waitUntil } from '@open-wc/testing';
-import sinon from 'sinon';
+import { describe, expect, it, vi } from 'vitest';
 import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
 import { customElement, html, LitElement } from '@umbraco-cms/backoffice/external/lit';
 import { of } from '@umbraco-cms/backoffice/external/rxjs';
@@ -11,7 +10,7 @@ import { IpEntryModalData, IpEntryModalValue } from './IpEntryModalToken';
 
 @customElement('ip-entry-modal-test-host')
 class TestHost extends UmbElementMixin(LitElement) {
-  saveIpAccessEntry = sinon.stub().resolves();
+  saveIpAccessEntry = vi.fn(async (_entry: IPAccessEntry): Promise<void> => {});
 
   constructor() {
     super();
@@ -41,27 +40,29 @@ describe('IpEntryModal', () => {
 
     modal.modalContext = {
       data: { ipEntry },
-      submit: sinon.spy(),
+      submit: vi.fn(),
     } as unknown as UmbModalContext<IpEntryModalData, IpEntryModalValue>;
 
     host.append(modal);
-    await fixture(host);
-    await modal.updateComplete;
-
-    modal.shadowRoot?.querySelector('form')?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    await waitUntil(() => host.saveIpAccessEntry.calledOnce);
-
-    return host.saveIpAccessEntry.firstCall.args[0] as IPAccessEntry;
+    document.body.append(host);
+    try {
+      await modal.updateComplete;
+      modal.shadowRoot?.querySelector('form')?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      await vi.waitFor(() => expect(host.saveIpAccessEntry).toHaveBeenCalledOnce());
+      return host.saveIpAccessEntry.mock.calls[0][0];
+    } finally {
+      host.remove();
+    }
   }
 
   it('sends Guid.Empty when saving a new entry', async () => {
     const entry = await saveEntry('');
-    expect(entry.id).to.equal('00000000-0000-0000-0000-000000000000');
+    expect(entry.id).toBe('00000000-0000-0000-0000-000000000000');
   });
 
   it('preserves the ID when saving an existing entry', async () => {
     const id = '58B69078-7F0E-4050-95FC-AAE24E93E762';
     const entry = await saveEntry(id);
-    expect(entry.id).to.equal(id);
+    expect(entry.id).toBe(id);
   });
 });
