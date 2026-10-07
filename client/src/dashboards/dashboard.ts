@@ -159,7 +159,7 @@ export class DashboardElement extends UmbElementMixin(LitElement) {
                   <uui-button
                     label="Edit button"
                     look="primary"
-                    color="default"
+                    color="${ipEntry.isEditable ? 'default' : 'danger'}"
                     @click="${() => this._handleEditClick(ipEntry)}"
                     ?disabled="${!ipEntry.isEditable}"
                     >Edit</uui-button

@@ -550,7 +550,7 @@ var Y = m((() => {})), fe = /* @__PURE__ */ h({
                   <uui-button
                     label="Edit button"
                     look="primary"
-                    color="default"
+                    color="${e.isEditable ? "default" : "danger"}"
                     @click="${() => this._handleEditClick(e)}"
                     ?disabled="${!e.isEditable}"
                     >Edit</uui-button
