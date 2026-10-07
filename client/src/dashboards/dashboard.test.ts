@@ -1,6 +1,5 @@
-import { expect, fixture, html } from '@open-wc/testing';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import DashboardElement from '@dashboards/dashboard.ts';
-import sinon from 'sinon';
 import { UmbModalManagerContext } from '@umbraco-cms/backoffice/modal';
 import IPAccessRestrictionContext from '@context/IpAccessRestrictionContext';
 
@@ -8,32 +7,33 @@ describe('DashboardElement', () => {
   let dashboard: DashboardElement;
   let modalManagerMock: UmbModalManagerContext;
   let ipAccessRestrictionMock: Partial<IPAccessRestrictionContext>;
+  let container: HTMLDivElement;
 
   beforeEach(async () => {
-    dashboard = await fixture(html`<dashboard-element></dashboard-element>`);
+    container = document.createElement('div');
+    dashboard = new DashboardElement();
+    container.append(dashboard);
+    document.body.append(container);
+    await dashboard.updateComplete;
 
     modalManagerMock = {
-      open: sinon.spy(),
-      close: sinon.spy(),
+      open: vi.fn(),
+      close: vi.fn(),
     } as unknown as UmbModalManagerContext;
 
     dashboard.modalManagerContext = modalManagerMock;
 
     ipAccessRestrictionMock = {
-      getIpAccessEntryById: sinon.stub().resolves({
+      getIpAccessEntryById: vi.fn(async (_id: string) => ({
         id: '58B69078-7F0E-4050-95FC-AAE24E93E762',
         ip: '192.168.0.1',
         description: 'Home',
         modified: '2024-07-30 13:51:57.8630594',
         modifiedBy: 'Rutger',
-      }),
-      deleteIpAccessEntry: sinon.stub().resolves({
-        id: '58B69078-7F0E-4050-95FC-AAE24E93E762',
-        ip: '192.168.0.1',
-        description: 'Home',
-        modified: '2024-07-30 13:51:57.8630594',
-        modifiedBy: 'Rutger',
-      }),
+        isDeleted: false,
+        isEditable: true,
+      })),
+      deleteIpAccessEntry: vi.fn(async (_id: string): Promise<void> => {}),
     };
 
     dashboard.context = ipAccessRestrictionMock as IPAccessRestrictionContext;
@@ -45,6 +45,8 @@ describe('DashboardElement', () => {
         description: 'Home',
         modified: '2024-07-30 13:51:57.8630594',
         modifiedBy: 'Rutger',
+        isDeleted: false,
+        isEditable: true,
       },
       {
         id: '58B69078-7F0E-4059-95FC-AAE24E93E764',
@@ -52,11 +54,15 @@ describe('DashboardElement', () => {
         description: 'Office',
         modified: '2024-08-02',
         modifiedBy: 'Admin',
+        isDeleted: false,
+        isEditable: true,
       },
     ];
 
     await dashboard.updateComplete;
   });
+
+  afterEach(() => container.remove());
 
   it('should call delete IP access entry when the "Delete" button is clicked', async () => {
     const deleteButtons = dashboard.shadowRoot?.querySelectorAll('uui-button[label="Delete button"]');
@@ -70,9 +76,11 @@ describe('DashboardElement', () => {
     await firstDeleteButton.click();
     await dashboard.updateComplete;
 
-    expect(ipAccessRestrictionMock.deleteIpAccessEntry).to.have.been.calledOnceWith(
-      '58B69078-7F0E-4050-95FC-AAE24E93E762',
-    );
+    await vi.waitFor(() => {
+      expect(ipAccessRestrictionMock.deleteIpAccessEntry).toHaveBeenCalledExactlyOnceWith(
+        '58B69078-7F0E-4050-95FC-AAE24E93E762',
+      );
+    });
   });
 
   it('should open the IP entry modal when the "Edit" button is clicked', async () => {
@@ -86,36 +94,38 @@ describe('DashboardElement', () => {
     await fitrstEditButton.click(); //await is needed here!
 
     await dashboard.updateComplete;
-    expect(modalManagerMock.open).to.have.been.calledOnce;
-    expect(ipAccessRestrictionMock.getIpAccessEntryById).to.have.been.calledWith(
-      '58B69078-7F0E-4050-95FC-AAE24E93E762',
-    );
+    await vi.waitFor(() => {
+      expect(modalManagerMock.open).toHaveBeenCalledOnce();
+      expect(ipAccessRestrictionMock.getIpAccessEntryById).toHaveBeenCalledWith(
+        '58B69078-7F0E-4050-95FC-AAE24E93E762',
+      );
+    });
   });
 
   it('is defined with its own instance', () => {
-    expect(dashboard).to.be.instanceOf(DashboardElement);
+    expect(dashboard).toBeInstanceOf(DashboardElement);
   });
 
   it('should have default properties', () => {
-    expect(dashboard.ipEntries);
-    expect(dashboard.ips);
-    expect(dashboard.clientIP);
-    expect(dashboard.customHeaderInfo);
-    expect(dashboard.isIpInList);
+    expect(dashboard.ipEntries).toBeDefined();
+    expect(dashboard.ips).toBeUndefined();
+    expect(dashboard.clientIP).toBeUndefined();
+    expect(dashboard.customHeaderInfo).toBeUndefined();
+    expect(dashboard.isIpInList).toBe(false);
   });
 
   it('should render a list of IP entries', async () => {
     await dashboard.updateComplete;
 
     const rows = dashboard.shadowRoot?.querySelectorAll('uui-table-row');
-    expect(rows?.length).to.equal(2);
+    expect(rows?.length).toBe(2);
 
     const firstRow = rows ? rows[0] : null;
-    const cells = firstRow ? firstRow.querySelectorAll('uui-table-cell') : [];
-    expect(cells[0].textContent).to.equal('192.168.0.1');
-    expect(cells[1].textContent).to.equal('Home');
-    expect(cells[2].textContent).to.equal('Jul 30, 2024');
-    expect(cells[3].textContent).to.equal('Rutger');
+    const cells = firstRow ? (firstRow as unknown as HTMLElement).querySelectorAll('uui-table-cell') : [];
+    expect(cells[0].textContent).toBe('192.168.0.1');
+    expect(cells[1].textContent).toBe('Home');
+    expect(cells[2].textContent).toBe('Jul 30, 2024');
+    expect(cells[3].textContent).toBe('Rutger');
 
     console.log(cells[2]);
   });
@@ -125,7 +135,7 @@ describe('DashboardElement', () => {
     addButton.click();
 
     await dashboard.updateComplete;
-    expect(modalManagerMock.open).to.have.been.calledOnce;
+    expect(modalManagerMock.open).toHaveBeenCalledOnce();
   });
 
   it('should open the IP entry modal when the "Your IP address is not on the list" button is clicked', async () => {
@@ -133,7 +143,7 @@ describe('DashboardElement', () => {
     addButton.click();
 
     await dashboard.updateComplete;
-    expect(modalManagerMock.open).to.have.been.calledOnce;
+    expect(modalManagerMock.open).toHaveBeenCalledOnce();
   });
 
   it('hides the custom header info div when there is no customHeaderInfo', async () => {
@@ -141,7 +151,7 @@ describe('DashboardElement', () => {
     await dashboard.updateComplete;
 
     const div = dashboard.shadowRoot?.querySelector('#header-alert');
-    expect(div).to.have.attribute('hidden');
+    expect(div?.hasAttribute('hidden')).toBe(true);
   });
 
   it('shows the custom header info div when customHeaderInfo is provided', async () => {
@@ -149,8 +159,8 @@ describe('DashboardElement', () => {
     await dashboard.updateComplete;
 
     const div = dashboard.shadowRoot?.querySelector('#header-alert');
-    expect(div).not.to.have.attribute('hidden');
-    expect(div?.querySelector('span')?.textContent).to.equal('Important Info');
+    expect(div?.hasAttribute('hidden')).toBe(false);
+    expect(div?.querySelector('span')?.textContent).toBe('Important Info');
   });
 
   it('hides the IP not in list div when isIpInList is true', async () => {
@@ -158,7 +168,7 @@ describe('DashboardElement', () => {
     await dashboard.updateComplete;
 
     const div = dashboard.shadowRoot?.querySelector('#ip-alert');
-    expect(div).to.have.attribute('hidden');
+    expect(div?.hasAttribute('hidden')).toBe(true);
   });
 
   it('shows the IP not in list div when isIpInList is false', async () => {
@@ -166,6 +176,6 @@ describe('DashboardElement', () => {
     await dashboard.updateComplete;
 
     const div = dashboard.shadowRoot?.querySelector('#ip-alert');
-    expect(div).not.to.have.attribute('hidden');
+    expect(div?.hasAttribute('hidden')).toBe(false);
   });
 });

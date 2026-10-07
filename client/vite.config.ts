@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite';
-import tsconfigPaths from 'vite-tsconfig-paths';
+import { defineConfig } from 'vitest/config';
+import { playwright } from '@vitest/browser-playwright';
 
 export default defineConfig({
-  plugins: [tsconfigPaths()],
+  resolve: { tsconfigPaths: true },
   build: {
     lib: {
       fileName: 'index',
@@ -12,17 +12,22 @@ export default defineConfig({
     outDir: '../src/wwwroot/App_Plugins/TFE.Umbraco.AccessRestriction', // your web component will be saved in this location
     emptyOutDir: true,
     sourcemap: true,
-    rollupOptions: {
+    rolldownOptions: {
       external: [/^@umbraco/],
       output: {
-        manualChunks: undefined,
-        inlineDynamicImports: true,
+        codeSplitting: false,
         chunkFileNames: `[name]-[hash].js`,
       },
     },
   },
   mode: 'production',
-  optimizeDeps: {
-    include: ['sinon', '@open-wc/testing'], // Add dependencies used across your tests or main files
+  test: {
+    include: ['src/**/*.test.ts'],
+    browser: {
+      enabled: true,
+      provider: playwright(),
+      headless: true,
+      instances: [{ browser: 'chromium' }, { browser: 'webkit' }],
+    },
   },
 });

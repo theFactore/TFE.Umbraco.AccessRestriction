@@ -102,6 +102,12 @@ public class UpdateIpAccessEntriesIdToGuid : AsyncMigrationBase
 			return Task.CompletedTask;
 		}
 
+		if (DatabaseType == NPoco.DatabaseType.SQLite)
+		{
+			MigrateSqliteTable(table);
+			return Task.CompletedTask;
+		}
+
 		AddIsEditableColumnIfMissing(table);
 
 		if (HasGuidIdColumn(table))
@@ -148,6 +154,39 @@ public class UpdateIpAccessEntriesIdToGuid : AsyncMigrationBase
 		AddPrimaryKeyConstraint(table);
 
 		return Task.CompletedTask;
+	}
+
+	private void MigrateSqliteTable(string table)
+	{
+		var idType = Database.ExecuteScalar<string>($"SELECT type FROM pragma_table_info('{table}') WHERE name = 'Id'");
+		if (string.IsNullOrWhiteSpace(idType))
+		{
+			throw new InvalidOperationException($"Table {table} has no Id column");
+		}
+
+		if (!idType.Contains("INT", StringComparison.OrdinalIgnoreCase))
+		{
+			AddIsEditableColumnIfMissing(table);
+			Logger.LogDebug("Table {Table} already has a non-integer Id column", table);
+			return;
+		}
+
+		var oldTable = $"{table}_Legacy";
+		Logger.LogInformation("Migrating SQLite table {Table} from integer to Guid Id", table);
+		Rename.Table(table).To(oldTable).Do();
+		Create.Table<IPAccessEntry>().Do();
+
+		var entries = Database.Fetch<IPAccessEntry>($@"
+			SELECT [Ip], [Description], [Created], [CreatedBy], [Modified], [ModifiedBy], [IsDeleted]
+			FROM [{oldTable}]");
+		foreach (var entry in entries)
+		{
+			entry.Id = Guid.NewGuid();
+			entry.IsEditable = true;
+			Database.Insert(entry);
+		}
+
+		Delete.Table(oldTable).Do();
 	}
 
 	private void AddIsEditableColumnIfMissing(string table)

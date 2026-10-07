@@ -1,602 +1,496 @@
-var K = (e) => {
-  throw TypeError(e);
-};
-var X = (e, t, s) => t.has(e) || K("Cannot " + s);
-var i = (e, t, s) => (X(e, t, "read from private field"), s ? s.call(e) : t.get(e)), d = (e, t, s) => t.has(e) ? K("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, s), l = (e, t, s, r) => (X(e, t, "write to private field"), r ? r.call(e, s) : t.set(e, s), s);
-import { UMB_AUTH_CONTEXT as lt } from "@umbraco-cms/backoffice/auth";
-import { LitElement as Z, html as N, unsafeHTML as dt, css as tt, property as h, customElement as et, state as ut } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as st } from "@umbraco-cms/backoffice/element-api";
-import { UmbModalToken as pt, UMB_MODAL_MANAGER_CONTEXT as ht } from "@umbraco-cms/backoffice/modal";
-import { UmbControllerBase as rt } from "@umbraco-cms/backoffice/class-api";
-import { UmbContextToken as yt } from "@umbraco-cms/backoffice/context-api";
-import { tryExecuteAndNotify as g } from "@umbraco-cms/backoffice/resources";
-import { UmbArrayState as Y, UmbStringState as M, UmbBooleanState as ft } from "@umbraco-cms/backoffice/observable-api";
-import { of as bt, firstValueFrom as It } from "@umbraco-cms/backoffice/external/rxjs";
-const mt = [
-  {
-    type: "dashboard",
-    name: "Access Restriction",
-    alias: "TFE.Umbraco.AccessRestriction",
-    elementName: "access-restriction",
-    js: () => Promise.resolve().then(() => kt),
-    weight: -10,
-    meta: {
-      label: "Access Restriction",
-      pathname: "access-restriction"
-    },
-    conditions: [
-      {
-        alias: "Umb.Condition.SectionAlias",
-        match: "Umb.Section.Content"
-      }
-    ]
-  }
-], At = [...mt], gt = [
-  {
-    type: "modal",
-    alias: "ip-entry-modal",
-    name: "IP Entry Modal",
-    js: () => Promise.resolve().then(() => Jt)
-  }
-], Et = [...gt], vt = [
-  {
-    type: "globalContext",
-    alias: "ip-access-restriction-context",
-    name: "IP Access Restriction Context",
-    js: () => Promise.resolve().then(() => Nt)
-  }
-], wt = [...vt];
-class Q extends Error {
-  constructor(t, s, r) {
-    super(r), this.name = "ApiError", this.url = s.url, this.status = s.status, this.statusText = s.statusText, this.body = s.body, this.request = t;
-  }
+import { LitElement as e, css as t, customElement as n, html as r, property as i, state as a, unsafeHTML as o } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as s } from "@umbraco-cms/backoffice/element-api";
+import { UmbControllerBase as c } from "@umbraco-cms/backoffice/class-api";
+import { UmbContextToken as l } from "@umbraco-cms/backoffice/context-api";
+import { tryExecuteAndNotify as u } from "@umbraco-cms/backoffice/resources";
+import { UmbArrayState as d, UmbBooleanState as ee, UmbStringState as f } from "@umbraco-cms/backoffice/observable-api";
+import { UMB_MODAL_MANAGER_CONTEXT as te, UmbModalToken as ne } from "@umbraco-cms/backoffice/modal";
+import { firstValueFrom as re, of as ie } from "@umbraco-cms/backoffice/external/rxjs";
+import { UMB_AUTH_CONTEXT as ae } from "@umbraco-cms/backoffice/auth";
+//#region \0rolldown/runtime.js
+var p = Object.defineProperty, m = (e, t, n) => () => {
+	if (n) throw n[0];
+	try {
+		return e && (t = e(e = 0)), t;
+	} catch (e) {
+		throw n = [e], e;
+	}
+}, h = (e, t) => {
+	let n = {};
+	for (var r in e) p(n, r, {
+		get: e[r],
+		enumerable: !0
+	});
+	return t || p(n, Symbol.toStringTag, { value: "Module" }), n;
+}, g, _ = m((() => {
+	g = class extends Error {
+		constructor(e, t, n) {
+			/* istanbul ignore file */
+			super(n), this.name = "ApiError", this.url = t.url, this.status = t.status, this.statusText = t.statusText, this.body = t.body, this.request = e;
+		}
+	};
+})), v, y, b = m((() => {
+	/* istanbul ignore file */
+	v = class extends Error {
+		constructor(e) {
+			super(e), this.name = "CancelError";
+		}
+		get isCancelled() {
+			return !0;
+		}
+	}, y = class {
+		#e;
+		#t;
+		#n;
+		#r;
+		#i;
+		#a;
+		#o;
+		constructor(e) {
+			this.#e = !1, this.#t = !1, this.#n = !1, this.#r = [], this.#i = new Promise((t, n) => {
+				this.#a = t, this.#o = n;
+				let r = (e) => {
+					this.#e || this.#t || this.#n || (this.#e = !0, this.#a && this.#a(e));
+				}, i = (e) => {
+					this.#e || this.#t || this.#n || (this.#t = !0, this.#o && this.#o(e));
+				}, a = (e) => {
+					this.#e || this.#t || this.#n || this.#r.push(e);
+				};
+				return Object.defineProperty(a, "isResolved", { get: () => this.#e }), Object.defineProperty(a, "isRejected", { get: () => this.#t }), Object.defineProperty(a, "isCancelled", { get: () => this.#n }), e(r, i, a);
+			});
+		}
+		get [Symbol.toStringTag]() {
+			return "Cancellable Promise";
+		}
+		then(e, t) {
+			return this.#i.then(e, t);
+		}
+		catch(e) {
+			return this.#i.catch(e);
+		}
+		finally(e) {
+			return this.#i.finally(e);
+		}
+		cancel() {
+			if (!(this.#e || this.#t || this.#n)) {
+				if (this.#n = !0, this.#r.length) try {
+					for (let e of this.#r) e();
+				} catch (e) {
+					console.warn("Cancellation threw an error", e);
+					return;
+				}
+				this.#r.length = 0, this.#o && this.#o(new v("Request aborted"));
+			}
+		}
+		get isCancelled() {
+			return this.#n;
+		}
+	};
+})), x, S = m((() => {
+	x = {
+		BASE: "",
+		VERSION: "Latest",
+		WITH_CREDENTIALS: !1,
+		CREDENTIALS: "include",
+		TOKEN: void 0,
+		USERNAME: void 0,
+		PASSWORD: void 0,
+		HEADERS: void 0,
+		ENCODE_PATH: void 0
+	};
+})), C, w, T, E, D, O, k, A, j, M, N, P, F, I, L, R, z, oe = m((() => {
+	/* istanbul ignore file */
+	/* istanbul ignore file */
+	_(), b(), C = (e) => e != null, w = (e) => typeof e == "string", T = (e) => w(e) && e !== "", E = (e) => typeof e == "object" && typeof e.type == "string" && typeof e.stream == "function" && typeof e.arrayBuffer == "function" && typeof e.constructor == "function" && typeof e.constructor.name == "string" && /^(Blob|File)$/.test(e.constructor.name) && /^(Blob|File)$/.test(e[Symbol.toStringTag]), D = (e) => e instanceof FormData, O = (e) => {
+		try {
+			return btoa(e);
+		} catch {
+			return Buffer.from(e).toString("base64");
+		}
+	}, k = (e) => {
+		let t = [], n = (e, n) => {
+			t.push(`${encodeURIComponent(e)}=${encodeURIComponent(String(n))}`);
+		}, r = (e, t) => {
+			C(t) && (Array.isArray(t) ? t.forEach((t) => {
+				r(e, t);
+			}) : typeof t == "object" ? Object.entries(t).forEach(([t, n]) => {
+				r(`${e}[${t}]`, n);
+			}) : n(e, t));
+		};
+		return Object.entries(e).forEach(([e, t]) => {
+			r(e, t);
+		}), t.length > 0 ? `?${t.join("&")}` : "";
+	}, A = (e, t) => {
+		let n = e.ENCODE_PATH || encodeURI, r = t.url.replace("{api-version}", e.VERSION).replace(/{(.*?)}/g, (e, r) => t.path?.hasOwnProperty(r) ? n(String(t.path[r])) : e), i = `${e.BASE}${r}`;
+		return t.query ? `${i}${k(t.query)}` : i;
+	}, j = (e) => {
+		if (e.formData) {
+			let t = new FormData(), n = (e, n) => {
+				w(n) || E(n) ? t.append(e, n) : t.append(e, JSON.stringify(n));
+			};
+			return Object.entries(e.formData).filter(([e, t]) => C(t)).forEach(([e, t]) => {
+				Array.isArray(t) ? t.forEach((t) => n(e, t)) : n(e, t);
+			}), t;
+		}
+	}, M = async (e, t) => typeof t == "function" ? t(e) : t, N = async (e, t) => {
+		let [n, r, i, a] = await Promise.all([
+			M(t, e.TOKEN),
+			M(t, e.USERNAME),
+			M(t, e.PASSWORD),
+			M(t, e.HEADERS)
+		]), o = Object.entries({
+			Accept: "application/json",
+			...a,
+			...t.headers
+		}).filter(([e, t]) => C(t)).reduce((e, [t, n]) => ({
+			...e,
+			[t]: String(n)
+		}), {});
+		return T(n) && (o.Authorization = `Bearer ${n}`), T(r) && T(i) && (o.Authorization = `Basic ${O(`${r}:${i}`)}`), t.body !== void 0 && (t.mediaType ? o["Content-Type"] = t.mediaType : E(t.body) ? o["Content-Type"] = t.body.type || "application/octet-stream" : w(t.body) ? o["Content-Type"] = "text/plain" : D(t.body) || (o["Content-Type"] = "application/json")), new Headers(o);
+	}, P = (e) => {
+		if (e.body !== void 0) return e.mediaType?.includes("/json") ? JSON.stringify(e.body) : w(e.body) || E(e.body) || D(e.body) ? e.body : JSON.stringify(e.body);
+	}, F = async (e, t, n, r, i, a, o) => {
+		let s = new AbortController(), c = {
+			headers: a,
+			body: r ?? i,
+			method: t.method,
+			signal: s.signal
+		};
+		return e.WITH_CREDENTIALS && (c.credentials = e.CREDENTIALS), o(() => s.abort()), await fetch(n, c);
+	}, I = (e, t) => {
+		if (t) {
+			let n = e.headers.get(t);
+			if (w(n)) return n;
+		}
+	}, L = async (e) => {
+		if (e.status !== 204) try {
+			let t = e.headers.get("Content-Type");
+			if (t) return ["application/json", "application/problem+json"].some((e) => t.toLowerCase().startsWith(e)) ? await e.json() : await e.text();
+		} catch (e) {
+			console.error(e);
+		}
+	}, R = (e, t) => {
+		let n = {
+			400: "Bad Request",
+			401: "Unauthorized",
+			403: "Forbidden",
+			404: "Not Found",
+			500: "Internal Server Error",
+			502: "Bad Gateway",
+			503: "Service Unavailable",
+			...e.errors
+		}[t.status];
+		if (n) throw new g(e, t, n);
+		if (!t.ok) {
+			let n = t.status ?? "unknown", r = t.statusText ?? "unknown", i = (() => {
+				try {
+					return JSON.stringify(t.body, null, 2);
+				} catch {
+					return;
+				}
+			})();
+			throw new g(e, t, `Generic Error: status: ${n}; status text: ${r}; body: ${i}`);
+		}
+	}, z = (e, t) => new y(async (n, r, i) => {
+		try {
+			let r = A(e, t), a = j(t), o = P(t), s = await N(e, t);
+			if (!i.isCancelled) {
+				let c = await F(e, t, r, o, a, s, i), l = await L(c), u = I(c, t.responseHeader), d = {
+					url: r,
+					ok: c.ok,
+					status: c.status,
+					statusText: c.statusText,
+					body: u ?? l
+				};
+				R(t, d), n(d.body);
+			}
+		} catch (e) {
+			r(e);
+		}
+	});
+})), B, se = m((() => {
+	S(), oe(), B = class {
+		static deleteUmbracoApiV1IpAccessRestrictionApiDelete(e) {
+			/* istanbul ignore file */
+			return z(x, {
+				method: "DELETE",
+				url: "/umbraco/api/v1/IPAccessRestrictionApi/Delete/{id}",
+				path: { id: e },
+				errors: { 401: "The resource is protected and requires an authentication token" }
+			});
+		}
+		static getUmbracoApiV1IpAccessRestrictionApiGetAll() {
+			return z(x, {
+				method: "GET",
+				url: "/umbraco/api/v1/IPAccessRestrictionApi/GetAll",
+				errors: { 401: "The resource is protected and requires an authentication token" }
+			});
+		}
+		static getUmbracoApiV1IpAccessRestrictionApiGetAllIpAddresses() {
+			return z(x, {
+				method: "GET",
+				url: "/umbraco/api/v1/IPAccessRestrictionApi/GetAllIpAddresses",
+				errors: { 401: "The resource is protected and requires an authentication token" }
+			});
+		}
+		static getUmbracoApiV1IpAccessRestrictionApiGetbyId(e) {
+			return z(x, {
+				method: "GET",
+				url: "/umbraco/api/v1/IPAccessRestrictionApi/GetbyId/{id}",
+				path: { id: e },
+				errors: { 401: "The resource is protected and requires an authentication token" }
+			});
+		}
+		static getUmbracoApiV1IpAccessRestrictionApiGetClientIp() {
+			return z(x, {
+				method: "GET",
+				url: "/umbraco/api/v1/IPAccessRestrictionApi/GetClientIP",
+				errors: { 401: "The resource is protected and requires an authentication token" }
+			});
+		}
+		static getUmbracoApiV1IpAccessRestrictionApiGetHeaderInfo() {
+			return z(x, {
+				method: "GET",
+				url: "/umbraco/api/v1/IPAccessRestrictionApi/GetHeaderInfo",
+				errors: { 401: "The resource is protected and requires an authentication token" }
+			});
+		}
+		static getUmbracoApiV1IpAccessRestrictionApiGetInstallationInfo() {
+			return z(x, {
+				method: "GET",
+				url: "/umbraco/api/v1/IPAccessRestrictionApi/GetInstallationInfo",
+				errors: { 401: "The resource is protected and requires an authentication token" }
+			});
+		}
+		static postUmbracoApiV1IpAccessRestrictionApiSave(e) {
+			return z(x, {
+				method: "POST",
+				url: "/umbraco/api/v1/IPAccessRestrictionApi/Save",
+				body: e,
+				mediaType: "application/json",
+				errors: { 401: "The resource is protected and requires an authentication token" }
+			});
+		}
+	};
+})), V = m((() => {
+	_(), b(), S(), se();
+})), H, ce = m((() => {
+	/* istanbul ignore file */
+	V(), H = class {
+		#e;
+		constructor(e) {
+			this.#e = e;
+		}
+		async delete(e) {
+			let t = B.deleteUmbracoApiV1IpAccessRestrictionApiDelete(e).then(() => !0).catch(() => !1);
+			return await u(this.#e, t);
+		}
+		async getAll() {
+			return await u(this.#e, B.getUmbracoApiV1IpAccessRestrictionApiGetAll());
+		}
+		async getAllIpAddresses() {
+			return await u(this.#e, B.getUmbracoApiV1IpAccessRestrictionApiGetAllIpAddresses());
+		}
+		async getbyId(e) {
+			return await u(this.#e, B.getUmbracoApiV1IpAccessRestrictionApiGetbyId(e));
+		}
+		async getClientIp() {
+			return await u(this.#e, B.getUmbracoApiV1IpAccessRestrictionApiGetClientIp());
+		}
+		async getHeaderInfo() {
+			return await u(this.#e, B.getUmbracoApiV1IpAccessRestrictionApiGetHeaderInfo());
+		}
+		async saveIpAccessEntry(e) {
+			return console.log("DataSource: Saving IP Access Entry:", e), await u(this.#e, B.postUmbracoApiV1IpAccessRestrictionApiSave(e));
+		}
+		async GetInstallationInfo() {
+			return await u(this.#e, B.getUmbracoApiV1IpAccessRestrictionApiGetInstallationInfo());
+		}
+	};
+})), U, le = m((() => {
+	ce(), U = class extends c {
+		#e;
+		constructor(e) {
+			super(e), this.#e = new H(this);
+		}
+		async deleteIpAccessEntry(e) {
+			return this.#e.delete(e);
+		}
+		async getAllIpAccessEntries() {
+			return this.#e.getAll();
+		}
+		async getAllIpAddresses() {
+			return this.#e.getAllIpAddresses();
+		}
+		async getIpAccessEntryById(e) {
+			return this.#e.getbyId(e);
+		}
+		async getClientIp() {
+			return this.#e.getClientIp();
+		}
+		async getHeaderInfo() {
+			return this.#e.getHeaderInfo();
+		}
+		async saveIpAccessEntry(e) {
+			return this.#e.saveIpAccessEntry(e);
+		}
+		async GetInstallationInfo() {
+			return this.#e.GetInstallationInfo();
+		}
+	};
+})), ue = /* @__PURE__ */ h({
+	IPAccessRestrictionContext: () => W,
+	IP_ACCESS_RESTRICTION_CONTEXT_TOKEN: () => G,
+	default: () => W
+}), W, G, K = m((() => {
+	le(), W = class extends c {
+		#e;
+		#t;
+		#n;
+		#r;
+		#i;
+		#a;
+		constructor(e) {
+			super(e), this.#e = new d([], (e) => e.id), this.ipEntries = this.#e.asObservable(), this.#t = new d([], (e) => e), this.ips = this.#t.asObservable(), this.#n = new f(""), this.clientIp = this.#n.asObservable(), this.#r = new f(""), this.headerInfo = this.#r.asObservable(), this.#i = new ee(!1), this.isIpInList = this.#i.asObservable(), this.#a = new f(""), this.installationInfo = this.#a.asObservable(), this.provideContext(G, this), this.repository = new U(this), this.checkIpInList();
+		}
+		_handleResultError(e) {
+			if (!e && e !== "") throw Error("Received undefined data");
+			if (e.error) throw Error(e.error.message);
+			return e;
+		}
+		async checkIpInList() {
+			await this.getAllIpAddresses(), await this.getClientIp();
+			let e = this.#t.getValue(), t = this.#n.getValue();
+			e && t ? this.#i.setValue(e.includes(t)) : (console.error("Your IP address is not on the list"), this.#i.setValue(!1));
+		}
+		async deleteIpAccessEntry(e) {
+			try {
+				let t = await this.repository.deleteIpAccessEntry(e);
+				this._handleResultError(t), await this.getAllIpAccessEntries(), await this.checkIpInList();
+			} catch (e) {
+				console.error("Error in deleteIpAccessEntry:", e);
+			}
+		}
+		async getAllIpAccessEntries() {
+			try {
+				let e = await this.repository.getAllIpAccessEntries(), t = this._handleResultError(e);
+				this.#e.setValue(t);
+			} catch (e) {
+				console.error("Error in getAllIpAccessEntries:", e);
+			}
+		}
+		async getAllIpAddresses() {
+			try {
+				let e = await this.repository.getAllIpAddresses(), t = this._handleResultError(e);
+				this.#t.setValue(t);
+			} catch (e) {
+				console.error("Error in getAllIpAddresses:", e);
+			}
+		}
+		async getIpAccessEntryById(e) {
+			try {
+				let t = await this.repository.getIpAccessEntryById(e);
+				return this._handleResultError(t);
+			} catch (e) {
+				console.error("Error in getIpAccessEntryById", e);
+				return;
+			}
+		}
+		async getClientIp() {
+			try {
+				let e = await this.repository.getClientIp(), t = this._handleResultError(e);
+				this.#n.setValue(t);
+			} catch (e) {
+				console.error("Error in getClientIp", e);
+			}
+		}
+		async getHeaderInfo() {
+			try {
+				let e = await this.repository.getHeaderInfo(), t = this._handleResultError(e);
+				this.#r.setValue(t);
+			} catch (e) {
+				console.error("Error in getHeaderInfo:", e);
+			}
+		}
+		async saveIpAccessEntry(e) {
+			try {
+				let t = await this.repository.saveIpAccessEntry(e);
+				this._handleResultError(t), await this.getAllIpAccessEntries(), await this.checkIpInList();
+			} catch (t) {
+				console.error("Error in saveIpAccessEntry:", t), console.error("Entry:", e);
+			}
+		}
+		async getInstallationInfo() {
+			try {
+				let e = await this.repository.GetInstallationInfo(), t = this._handleResultError(e);
+				this.#a.setValue(t);
+			} catch (e) {
+				console.error("Error in getInstallationInfo:", e);
+			}
+		}
+	}, G = new l(W.name);
+})), q, de = m((() => {
+	q = new ne("ip-entry-modal", { modal: {
+		type: "sidebar",
+		size: "small"
+	} });
+}));
+//#endregion
+//#region \0@oxc-project+runtime@0.152.0/helpers/esm/decorate.js
+function J(e, t, n, r) {
+	var i = arguments.length, a = i < 3 ? t : r === null ? r = Object.getOwnPropertyDescriptor(t, n) : r, o;
+	if (typeof Reflect == "object" && typeof Reflect.decorate == "function") a = Reflect.decorate(e, t, n, r);
+	else for (var s = e.length - 1; s >= 0; s--) (o = e[s]) && (a = (i < 3 ? o(a) : i > 3 ? o(t, n, a) : o(t, n)) || a);
+	return i > 3 && a && Object.defineProperty(t, n, a), a;
 }
-class Ct extends Error {
-  constructor(t) {
-    super(t), this.name = "CancelError";
-  }
-  get isCancelled() {
-    return !0;
-  }
-}
-var m, A, f, w, P, F, C;
-class _t {
-  constructor(t) {
-    d(this, m);
-    d(this, A);
-    d(this, f);
-    d(this, w);
-    d(this, P);
-    d(this, F);
-    d(this, C);
-    l(this, m, !1), l(this, A, !1), l(this, f, !1), l(this, w, []), l(this, P, new Promise((s, r) => {
-      l(this, F, s), l(this, C, r);
-      const o = (c) => {
-        i(this, m) || i(this, A) || i(this, f) || (l(this, m, !0), i(this, F) && i(this, F).call(this, c));
-      }, n = (c) => {
-        i(this, m) || i(this, A) || i(this, f) || (l(this, A, !0), i(this, C) && i(this, C).call(this, c));
-      }, a = (c) => {
-        i(this, m) || i(this, A) || i(this, f) || i(this, w).push(c);
-      };
-      return Object.defineProperty(a, "isResolved", {
-        get: () => i(this, m)
-      }), Object.defineProperty(a, "isRejected", {
-        get: () => i(this, A)
-      }), Object.defineProperty(a, "isCancelled", {
-        get: () => i(this, f)
-      }), t(o, n, a);
-    }));
-  }
-  get [Symbol.toStringTag]() {
-    return "Cancellable Promise";
-  }
-  then(t, s) {
-    return i(this, P).then(t, s);
-  }
-  catch(t) {
-    return i(this, P).catch(t);
-  }
-  finally(t) {
-    return i(this, P).finally(t);
-  }
-  cancel() {
-    if (!(i(this, m) || i(this, A) || i(this, f))) {
-      if (l(this, f, !0), i(this, w).length)
-        try {
-          for (const t of i(this, w))
-            t();
-        } catch (t) {
-          console.warn("Cancellation threw an error", t);
-          return;
-        }
-      i(this, w).length = 0, i(this, C) && i(this, C).call(this, new Ct("Request aborted"));
-    }
-  }
-  get isCancelled() {
-    return i(this, f);
-  }
-}
-m = new WeakMap(), A = new WeakMap(), f = new WeakMap(), w = new WeakMap(), P = new WeakMap(), F = new WeakMap(), C = new WeakMap();
-const y = {
-  BASE: "",
-  VERSION: "Latest",
-  WITH_CREDENTIALS: !1,
-  CREDENTIALS: "include",
-  TOKEN: void 0,
-  USERNAME: void 0,
-  PASSWORD: void 0,
-  HEADERS: void 0,
-  ENCODE_PATH: void 0
-}, W = (e) => e != null, G = (e) => typeof e == "string", k = (e) => G(e) && e !== "", z = (e) => typeof e == "object" && typeof e.type == "string" && typeof e.stream == "function" && typeof e.arrayBuffer == "function" && typeof e.constructor == "function" && typeof e.constructor.name == "string" && /^(Blob|File)$/.test(e.constructor.name) && /^(Blob|File)$/.test(e[Symbol.toStringTag]), it = (e) => e instanceof FormData, Rt = (e) => {
-  try {
-    return btoa(e);
-  } catch {
-    return Buffer.from(e).toString("base64");
-  }
-}, St = (e) => {
-  const t = [], s = (o, n) => {
-    t.push(`${encodeURIComponent(o)}=${encodeURIComponent(String(n))}`);
-  }, r = (o, n) => {
-    W(n) && (Array.isArray(n) ? n.forEach((a) => {
-      r(o, a);
-    }) : typeof n == "object" ? Object.entries(n).forEach(([a, c]) => {
-      r(`${o}[${a}]`, c);
-    }) : s(o, n));
-  };
-  return Object.entries(e).forEach(([o, n]) => {
-    r(o, n);
-  }), t.length > 0 ? `?${t.join("&")}` : "";
-}, Pt = (e, t) => {
-  const s = encodeURI, r = t.url.replace("{api-version}", e.VERSION).replace(/{(.*?)}/g, (n, a) => {
-    var c;
-    return (c = t.path) != null && c.hasOwnProperty(a) ? s(String(t.path[a])) : n;
-  }), o = `${e.BASE}${r}`;
-  return t.query ? `${o}${St(t.query)}` : o;
-}, xt = (e) => {
-  if (e.formData) {
-    const t = new FormData(), s = (r, o) => {
-      G(o) || z(o) ? t.append(r, o) : t.append(r, JSON.stringify(o));
-    };
-    return Object.entries(e.formData).filter(([r, o]) => W(o)).forEach(([r, o]) => {
-      Array.isArray(o) ? o.forEach((n) => s(r, n)) : s(r, o);
-    }), t;
-  }
-}, B = async (e, t) => typeof t == "function" ? t(e) : t, Ot = async (e, t) => {
-  const [s, r, o, n] = await Promise.all([
-    B(t, e.TOKEN),
-    B(t, e.USERNAME),
-    B(t, e.PASSWORD),
-    B(t, e.HEADERS)
-  ]), a = Object.entries({
-    Accept: "application/json",
-    ...n,
-    ...t.headers
-  }).filter(([c, R]) => W(R)).reduce((c, [R, S]) => ({
-    ...c,
-    [R]: String(S)
-  }), {});
-  if (k(s) && (a.Authorization = `Bearer ${s}`), k(r) && k(o)) {
-    const c = Rt(`${r}:${o}`);
-    a.Authorization = `Basic ${c}`;
-  }
-  return t.body !== void 0 && (t.mediaType ? a["Content-Type"] = t.mediaType : z(t.body) ? a["Content-Type"] = t.body.type || "application/octet-stream" : G(t.body) ? a["Content-Type"] = "text/plain" : it(t.body) || (a["Content-Type"] = "application/json")), new Headers(a);
-}, Tt = (e) => {
-  var t;
-  if (e.body !== void 0)
-    return (t = e.mediaType) != null && t.includes("/json") ? JSON.stringify(e.body) : G(e.body) || z(e.body) || it(e.body) ? e.body : JSON.stringify(e.body);
-}, $t = async (e, t, s, r, o, n, a) => {
-  const c = new AbortController(), R = {
-    headers: n,
-    body: r ?? o,
-    method: t.method,
-    signal: c.signal
-  };
-  return a(() => c.abort()), await fetch(s, R);
-}, Dt = (e, t) => {
-  if (t) {
-    const s = e.headers.get(t);
-    if (G(s))
-      return s;
-  }
-}, Ft = async (e) => {
-  if (e.status !== 204)
-    try {
-      const t = e.headers.get("Content-Type");
-      if (t)
-        return ["application/json", "application/problem+json"].some((o) => t.toLowerCase().startsWith(o)) ? await e.json() : await e.text();
-    } catch (t) {
-      console.error(t);
-    }
-}, Ut = (e, t) => {
-  const r = {
-    400: "Bad Request",
-    401: "Unauthorized",
-    403: "Forbidden",
-    404: "Not Found",
-    500: "Internal Server Error",
-    502: "Bad Gateway",
-    503: "Service Unavailable",
-    ...e.errors
-  }[t.status];
-  if (r)
-    throw new Q(e, t, r);
-  if (!t.ok) {
-    const o = t.status ?? "unknown", n = t.statusText ?? "unknown", a = (() => {
-      try {
-        return JSON.stringify(t.body, null, 2);
-      } catch {
-        return;
-      }
-    })();
-    throw new Q(
-      e,
-      t,
-      `Generic Error: status: ${o}; status text: ${n}; body: ${a}`
-    );
-  }
-}, E = (e, t) => new _t(async (s, r, o) => {
-  try {
-    const n = Pt(e, t), a = xt(t), c = Tt(t), R = await Ot(e, t);
-    if (!o.isCancelled) {
-      const S = await $t(e, t, n, c, a, R, o), at = await Ft(S), ct = Dt(S, t.responseHeader), J = {
-        url: n,
-        ok: S.ok,
-        status: S.status,
-        statusText: S.statusText,
-        body: ct ?? at
-      };
-      Ut(t, J), s(J.body);
-    }
-  } catch (n) {
-    r(n);
-  }
-});
-class v {
-  /**
-   * @param id
-   * @returns void
-   * @throws ApiError
-   */
-  static deleteUmbracoApiV1IpAccessRestrictionApiDelete(t) {
-    return E(y, {
-      method: "DELETE",
-      url: "/umbraco/api/v1/IPAccessRestrictionApi/Delete/{id}",
-      path: {
-        id: t
-      },
-      errors: {
-        404: "Not Found"
-      }
-    });
-  }
-  /**
-   * @returns any OK
-   * @throws ApiError
-   */
-  static getUmbracoApiV1IpAccessRestrictionApiGetAll() {
-    return E(y, {
-      method: "GET",
-      url: "/umbraco/api/v1/IPAccessRestrictionApi/GetAll"
-    });
-  }
-  /**
-   * @returns string OK
-   * @throws ApiError
-   */
-  static getUmbracoApiV1IpAccessRestrictionApiGetAllIpAddresses() {
-    return E(y, {
-      method: "GET",
-      url: "/umbraco/api/v1/IPAccessRestrictionApi/GetAllIpAddresses"
-    });
-  }
-  /**
-   * @param id
-   * @returns any OK
-   * @throws ApiError
-   */
-  static getUmbracoApiV1IpAccessRestrictionApiGetbyId(t) {
-    return E(y, {
-      method: "GET",
-      url: "/umbraco/api/v1/IPAccessRestrictionApi/GetbyId/{id}",
-      path: {
-        id: t
-      },
-      errors: {
-        404: "Not Found"
-      }
-    });
-  }
-  /**
-   * @returns string OK
-   * @throws ApiError
-   */
-  static getUmbracoApiV1IpAccessRestrictionApiGetClientIp() {
-    return E(y, {
-      method: "GET",
-      url: "/umbraco/api/v1/IPAccessRestrictionApi/GetClientIP"
-    });
-  }
-  /**
-   * @returns string OK
-   * @throws ApiError
-   */
-  static getUmbracoApiV1IpAccessRestrictionApiGetHeaderInfo() {
-    return E(y, {
-      method: "GET",
-      url: "/umbraco/api/v1/IPAccessRestrictionApi/GetHeaderInfo",
-      errors: {
-        404: "Not Found"
-      }
-    });
-  }
-  /**
-   * @param requestBody
-   * @returns any Created
-   * @throws ApiError
-   */
-  static postUmbracoApiV1IpAccessRestrictionApiSave(t) {
-    return E(y, {
-      method: "POST",
-      url: "/umbraco/api/v1/IPAccessRestrictionApi/Save",
-      body: t,
-      mediaType: "application/json",
-      errors: {
-        400: "Bad Request"
-      }
-    });
-  }
-  /**
-   * @returns string OK
-   * @throws ApiError
-   */
-  static getUmbracoApiV1IpAccessRestrictionApiGetInstallationInfo() {
-    return E(y, {
-      method: "GET",
-      url: "/umbraco/api/v1/IPAccessRestrictionApi/GetInstallationInfo",
-      errors: {
-        404: "Not Found"
-      }
-    });
-  }
-}
-const oe = (e, t) => {
-  t.registerMany([...At, ...Et, ...wt]), e.consumeContext(lt, (s) => {
-    if (!s)
-      return;
-    const r = s.getOpenApiConfiguration();
-    y.BASE = r.base ?? "", y.TOKEN = r.token ?? void 0, y.CREDENTIALS = r.credentials ?? "include";
-  });
-};
-var u;
-class jt {
-  constructor(t) {
-    d(this, u);
-    l(this, u, t);
-  }
-  async delete(t) {
-    const s = v.deleteUmbracoApiV1IpAccessRestrictionApiDelete(t).then(() => !0).catch(() => !1);
-    return await g(i(this, u), s);
-  }
-  async getAll() {
-    return await g(i(this, u), v.getUmbracoApiV1IpAccessRestrictionApiGetAll());
-  }
-  async getAllIpAddresses() {
-    return await g(i(this, u), v.getUmbracoApiV1IpAccessRestrictionApiGetAllIpAddresses());
-  }
-  async getbyId(t) {
-    return await g(i(this, u), v.getUmbracoApiV1IpAccessRestrictionApiGetbyId(t));
-  }
-  async getClientIp() {
-    return await g(i(this, u), v.getUmbracoApiV1IpAccessRestrictionApiGetClientIp());
-  }
-  async getHeaderInfo() {
-    return await g(i(this, u), v.getUmbracoApiV1IpAccessRestrictionApiGetHeaderInfo());
-  }
-  async saveIpAccessEntry(t) {
-    return console.log("DataSource: Saving IP Access Entry:", t), await g(i(this, u), v.postUmbracoApiV1IpAccessRestrictionApiSave(t));
-  }
-  async GetInstallationInfo() {
-    return await g(i(this, u), v.getUmbracoApiV1IpAccessRestrictionApiGetInstallationInfo());
-  }
-}
-u = new WeakMap();
-var p;
-class Vt extends rt {
-  constructor(s) {
-    super(s);
-    d(this, p);
-    l(this, p, new jt(this));
-  }
-  async deleteIpAccessEntry(s) {
-    return i(this, p).delete(s);
-  }
-  async getAllIpAccessEntries() {
-    return i(this, p).getAll();
-  }
-  async getAllIpAddresses() {
-    return i(this, p).getAllIpAddresses();
-  }
-  async getIpAccessEntryById(s) {
-    return i(this, p).getbyId(s);
-  }
-  async getClientIp() {
-    return i(this, p).getClientIp();
-  }
-  async getHeaderInfo() {
-    return i(this, p).getHeaderInfo();
-  }
-  async saveIpAccessEntry(s) {
-    return i(this, p).saveIpAccessEntry(s);
-  }
-  async GetInstallationInfo() {
-    return i(this, p).GetInstallationInfo();
-  }
-}
-p = new WeakMap();
-var U, x, O, j, T, V;
-class q extends rt {
-  constructor(s) {
-    super(s);
-    d(this, U);
-    d(this, x);
-    d(this, O);
-    d(this, j);
-    d(this, T);
-    d(this, V);
-    l(this, U, new Y([], (r) => r.id)), this.ipEntries = i(this, U).asObservable(), l(this, x, new Y([], (r) => r)), this.ips = i(this, x).asObservable(), l(this, O, new M("")), this.clientIp = i(this, O).asObservable(), l(this, j, new M("")), this.headerInfo = i(this, j).asObservable(), l(this, T, new ft(!1)), this.isIpInList = i(this, T).asObservable(), l(this, V, new M("")), this.installationInfo = i(this, V).asObservable(), this.provideContext(H, this), this.repository = new Vt(this), this.checkIpInList();
-  }
-  _handleResultError(s) {
-    if (!s && s !== "")
-      throw new Error("Received undefined data");
-    if (s.error)
-      throw new Error(s.error.message);
-    return s;
-  }
-  async checkIpInList() {
-    await this.getAllIpAddresses(), await this.getClientIp();
-    let s = i(this, x).getValue(), r = i(this, O).getValue();
-    s && r ? i(this, T).setValue(s.includes(r)) : (console.error("Your IP address is not on the list"), i(this, T).setValue(!1));
-  }
-  async deleteIpAccessEntry(s) {
-    try {
-      const r = await this.repository.deleteIpAccessEntry(s);
-      this._handleResultError(r), await this.getAllIpAccessEntries(), await this.checkIpInList();
-    } catch (r) {
-      console.error("Error in deleteIpAccessEntry:", r);
-    }
-  }
-  async getAllIpAccessEntries() {
-    try {
-      const s = await this.repository.getAllIpAccessEntries(), r = this._handleResultError(s);
-      i(this, U).setValue(r);
-    } catch (s) {
-      console.error("Error in getAllIpAccessEntries:", s);
-    }
-  }
-  async getAllIpAddresses() {
-    try {
-      const s = await this.repository.getAllIpAddresses(), r = this._handleResultError(s);
-      i(this, x).setValue(r);
-    } catch (s) {
-      console.error("Error in getAllIpAddresses:", s);
-    }
-  }
-  async getIpAccessEntryById(s) {
-    try {
-      const r = await this.repository.getIpAccessEntryById(s);
-      return this._handleResultError(r);
-    } catch (r) {
-      console.error("Error in getIpAccessEntryById", r);
-      return;
-    }
-  }
-  async getClientIp() {
-    try {
-      const s = await this.repository.getClientIp(), r = this._handleResultError(s);
-      i(this, O).setValue(r);
-    } catch (s) {
-      console.error("Error in getClientIp", s);
-    }
-  }
-  async getHeaderInfo() {
-    try {
-      const s = await this.repository.getHeaderInfo(), r = this._handleResultError(s);
-      i(this, j).setValue(r);
-    } catch (s) {
-      console.error("Error in getHeaderInfo:", s);
-    }
-  }
-  async saveIpAccessEntry(s) {
-    try {
-      const r = await this.repository.saveIpAccessEntry(s);
-      this._handleResultError(r), await this.getAllIpAccessEntries(), await this.checkIpInList();
-    } catch (r) {
-      console.error("Error in saveIpAccessEntry:", r), console.error("Entry:", s);
-    }
-  }
-  async getInstallationInfo() {
-    try {
-      const s = await this.repository.GetInstallationInfo(), r = this._handleResultError(s);
-      i(this, V).setValue(r);
-    } catch (s) {
-      console.error("Error in getInstallationInfo:", s);
-    }
-  }
-}
-U = new WeakMap(), x = new WeakMap(), O = new WeakMap(), j = new WeakMap(), T = new WeakMap(), V = new WeakMap();
-const H = new yt(
-  q.name
-), Nt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  IPAccessRestrictionContext: q,
-  IP_ACCESS_RESTRICTION_CONTEXT_TOKEN: H,
-  default: q
-}, Symbol.toStringTag, { value: "Module" })), Gt = new pt("ip-entry-modal", {
-  modal: {
-    type: "sidebar",
-    size: "small"
-  }
-});
-var Bt = Object.defineProperty, Ht = Object.getOwnPropertyDescriptor, $ = (e, t, s, r) => {
-  for (var o = r > 1 ? void 0 : r ? Ht(t, s) : t, n = e.length - 1, a; n >= 0; n--)
-    (a = e[n]) && (o = (r ? a(t, s, o) : a(o)) || o);
-  return r && o && Bt(t, s, o), o;
-};
-let b = class extends st(Z) {
-  constructor() {
-    super(), this.isIpInList = !1, this.consumeContext(H, (e) => {
-      this.context = e, e && (this.observe(e.ipEntries, (t) => {
-        this.ipEntries = t;
-      }), this.observe(e.ips, (t) => {
-        this.ips = t;
-      }), this.observe(e.clientIp, (t) => {
-        this.clientIP = t;
-      }), this.observe(e.headerInfo, (t) => {
-        this.customHeaderInfo = t;
-      }), this.observe(e.isIpInList, (t) => {
-        this.isIpInList = t;
-      }), this.observe(e.installationInfo, (t) => {
-        this.installationInfo = t;
-      }));
-    }), this.consumeContext(ht, (e) => {
-      this.modalManagerContext = e;
-    });
-  }
-  connectedCallback() {
-    super.connectedCallback(), this.context != null && (this.context.getAllIpAccessEntries(), this.context.getHeaderInfo(), this.context.checkIpInList(), this.context.getInstallationInfo());
-  }
-  _formatDate(e) {
-    if (!e)
-      return "";
-    const t = {
-      year: "numeric",
-      month: "short",
-      day: "numeric"
-    };
-    return new Date(e).toLocaleDateString("en-US", t);
-  }
-  _openModal(e) {
-    var t;
-    (t = this.modalManagerContext) == null || t.open(this, Gt, {
-      data: {
-        ipEntry: e
-      }
-    });
-  }
-  async _handleEditClick(e) {
-    var t;
-    if (e.id) {
-      const s = await ((t = this.context) == null ? void 0 : t.getIpAccessEntryById(e.id));
-      this._openModal(s);
-    } else
-      console.error("@handleEditClick IP Address is undefined or null");
-  }
-  async _handleDeleteClick(e) {
-    e.id ? await this.context.deleteIpAccessEntry(e.id) : console.error("IP entry ID is undefined or null");
-  }
-  render() {
-    var e;
-    return N`
+var Y = m((() => {})), fe = /* @__PURE__ */ h({
+	DashboardElement: () => X,
+	default: () => Z
+}), X, Z, pe = m((() => {
+	K(), de(), Y(), X = class extends s(e) {
+		constructor() {
+			super(), this.isIpInList = !1, this.consumeContext(G, (e) => {
+				this.context = e, e && (this.observe(e.ipEntries, (e) => {
+					this.ipEntries = e;
+				}), this.observe(e.ips, (e) => {
+					this.ips = e;
+				}), this.observe(e.clientIp, (e) => {
+					this.clientIP = e;
+				}), this.observe(e.headerInfo, (e) => {
+					this.customHeaderInfo = e;
+				}), this.observe(e.isIpInList, (e) => {
+					this.isIpInList = e;
+				}), this.observe(e.installationInfo, (e) => {
+					this.installationInfo = e;
+				}));
+			}), this.consumeContext(te, (e) => {
+				this.modalManagerContext = e;
+			});
+		}
+		connectedCallback() {
+			super.connectedCallback(), this.context != null && (this.context.getAllIpAccessEntries(), this.context.getHeaderInfo(), this.context.checkIpInList(), this.context.getInstallationInfo());
+		}
+		_formatDate(e) {
+			return e ? new Date(e).toLocaleDateString("en-US", {
+				year: "numeric",
+				month: "short",
+				day: "numeric"
+			}) : "";
+		}
+		_openModal(e) {
+			this.modalManagerContext?.open(this, q, { data: { ipEntry: e } });
+		}
+		async _handleEditClick(e) {
+			if (e.id) {
+				let t = await this.context?.getIpAccessEntryById(e.id);
+				this._openModal(t);
+			} else console.error("@handleEditClick IP Address is undefined or null");
+		}
+		async _handleDeleteClick(e) {
+			e.id ? await this.context.deleteIpAccessEntry(e.id) : console.error("IP entry ID is undefined or null");
+		}
+		render() {
+			return r`
       <div class="container">
         <div id="top-bar">
           <uui-button label="Add new IP address" look="primary" @click="${this._openModal}"
@@ -605,7 +499,7 @@ let b = class extends st(Z) {
 
           <div id="installation-alert" ?hidden="${!this.installationInfo}">
             <uui-icon name="alert" style="color: orange; margin-bottom: 4px;"></uui-icon>
-            <span>${dt(this.installationInfo)}</span>
+            <span>${o(this.installationInfo)}</span>
           </div>
 
           <div id="header-alert" ?hidden="${!this.customHeaderInfo}">
@@ -619,7 +513,13 @@ let b = class extends st(Z) {
             <uui-button
               label="Add current IP address"
               look="primary"
-              @click="${() => this._openModal({ id: "", ip: this.clientIP, description: "" })}"
+              @click="${() => this._openModal({
+				id: "",
+				ip: this.clientIP,
+				description: "",
+				isDeleted: !1,
+				isEditable: !0
+			})}"
               >+ Add</uui-button
             >
           </div>
@@ -640,40 +540,38 @@ let b = class extends st(Z) {
             <uui-table-head-cell>Actions</uui-table-head-cell>
           </uui-table-head>
 
-          ${(e = this.ipEntries) == null ? void 0 : e.map(
-      (t) => N`
+          ${this.ipEntries?.map((e) => r`
               <uui-table-row>
-                <uui-table-cell>${t.ip}</uui-table-cell>
-                <uui-table-cell>${t.description}</uui-table-cell>
-                <uui-table-cell>${this._formatDate(t.modified)}</uui-table-cell>
-                <uui-table-cell>${t.modifiedBy}</uui-table-cell>
+                <uui-table-cell>${e.ip}</uui-table-cell>
+                <uui-table-cell>${e.description}</uui-table-cell>
+                <uui-table-cell>${this._formatDate(e.modified)}</uui-table-cell>
+                <uui-table-cell>${e.modifiedBy}</uui-table-cell>
                 <uui-table-cell>
                   <uui-button
                     label="Edit button"
                     look="primary"
-                    color="default"
-                    @click="${() => this._handleEditClick(t)}"
-                    ?disabled="${!t.isEditable}"
+                    color="${e.isEditable ? "default" : "danger"}"
+                    @click="${() => this._handleEditClick(e)}"
+                    ?disabled="${!e.isEditable}"
                     >Edit</uui-button
                   >
                   <uui-button
                     label="Delete button"
                     look="primary"
                     color="danger"
-                    @click="${() => this._handleDeleteClick(t)}"
-                    ?disabled="${!t.isEditable}"
+                    @click="${() => this._handleDeleteClick(e)}"
+                    ?disabled="${!e.isEditable}"
                     >Delete</uui-button
                   >
                 </uui-table-cell>
               </uui-table-row>
-            `
-    )}
+            `)}
         </uui-table>
       </div>
     `;
-  }
-};
-b.styles = tt`
+		}
+		static {
+			this.styles = t`
     .container {
       padding: 30px;
     }
@@ -683,103 +581,82 @@ b.styles = tt`
       align-items: center;
     }
   `;
-$([
-  h({ type: Array })
-], b.prototype, "ipEntries", 2);
-$([
-  h({ type: Array })
-], b.prototype, "ips", 2);
-$([
-  h({ type: String })
-], b.prototype, "clientIP", 2);
-$([
-  h({ type: String })
-], b.prototype, "customHeaderInfo", 2);
-$([
-  h({ type: Boolean })
-], b.prototype, "isIpInList", 2);
-$([
-  h({ type: String })
-], b.prototype, "installationInfo", 2);
-b = $([
-  et("dashboard-element")
-], b);
-const Mt = b, kt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  get DashboardElement() {
-    return b;
-  },
-  default: Mt
-}, Symbol.toStringTag, { value: "Module" }));
-var Lt = Object.defineProperty, qt = Object.getOwnPropertyDescriptor, ot = (e) => {
-  throw TypeError(e);
-}, _ = (e, t, s, r) => {
-  for (var o = r > 1 ? void 0 : r ? qt(t, s) : t, n = e.length - 1, a; n >= 0; n--)
-    (a = e[n]) && (o = (r ? a(t, s, o) : a(o)) || o);
-  return r && o && Lt(t, s, o), o;
-}, nt = (e, t, s) => t.has(e) || ot("Cannot " + s), L = (e, t, s) => (nt(e, t, "read from private field"), t.get(e)), Wt = (e, t, s) => t.has(e) ? ot("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, s), zt = (e, t, s, r) => (nt(e, t, "write to private field"), t.set(e, s), s), D;
-let I = class extends st(Z) {
-  constructor() {
-    super(), Wt(this, D), this.isValid = !1, this.errors = {}, this.id = "", this.ip = "", this.description = "", this.initialIp = "", this.consumeContext(H, (e) => {
-      zt(this, D, e);
-    });
-  }
-  firstUpdated() {
-    var e, t;
-    if ((t = (e = this.modalContext) == null ? void 0 : e.data) != null && t.ipEntry) {
-      const { id: s, ip: r, description: o } = this.modalContext.data.ipEntry;
-      this.id = s ?? "", this.ip = r ?? "", this.description = o ?? "", this.initialIp = r ?? "";
-    } else
-      console.error("No IP Entry data found in modal context");
-  }
-  _handleClose() {
-    var e;
-    (e = this.modalContext) == null || e.submit();
-  }
-  async _handleSubmit(e) {
-    if (e.preventDefault(), await this._validateForm(), !this.isValid) {
-      console.error("Form validation failed:");
-      return;
-    }
-    const t = {
-      ip: this.ip,
-      description: this.description
-    };
-    this.id && (t.id = this.id);
-    try {
-      L(this, D) ? await L(this, D).saveIpAccessEntry(t) : console.error("Access restriction context is not available"), this._handleClose();
-    } catch (s) {
-      console.error("Failed to save IP access entry:", s);
-    }
-  }
-  _handleInputChange(e) {
-    let t;
-    ((o) => {
-      o.Id = "id", o.Ip = "ip", o.Description = "description";
-    })(t || (t = {}));
-    const s = (o) => Object.values(t).includes(o), r = e.target;
-    s(r.name) && (this[r.name] = r.value), this._validateForm();
-  }
-  _validateIp(e) {
-    if (!e)
-      return !1;
-    const t = (e.match(/\*/g) || []).length;
-    return t > 0 ? !!(t === 1 && e.endsWith("*")) : /((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))/.test(e);
-  }
-  async _checkDuplicateIps(e) {
-    var t;
-    try {
-      const s = ((t = L(this, D)) == null ? void 0 : t.ips) ?? bt();
-      return (await It(s)).includes(e) && this.initialIp !== e;
-    } catch (s) {
-      return console.error("No duplicates found in ips observable, error:", s), !1;
-    }
-  }
-  async _validateForm() {
-    this.errors = {}, this._validateIp(this.ip) ? await this._checkDuplicateIps(this.ip) && (this.errors.ip = "The IP Address is already whitelisted", this.requestUpdate()) : this.errors.ip = "Invalid IP", this.description || (this.errors.description = "A description is required"), this.isValid = Object.keys(this.errors).length === 0;
-  }
-  render() {
-    return N`
+		}
+	}, J([i({ type: Array })], X.prototype, "ipEntries", void 0), J([i({ type: Array })], X.prototype, "ips", void 0), J([i({ type: String })], X.prototype, "clientIP", void 0), J([i({ type: String })], X.prototype, "customHeaderInfo", void 0), J([i({ type: Boolean })], X.prototype, "isIpInList", void 0), J([i({ type: String })], X.prototype, "installationInfo", void 0), X = J([n("dashboard-element")], X), Z = X;
+})), me = [{
+	type: "dashboard",
+	name: "Access Restriction",
+	alias: "TFE.Umbraco.AccessRestriction",
+	elementName: "access-restriction",
+	js: () => Promise.resolve().then(() => (pe(), fe)),
+	weight: -10,
+	meta: {
+		label: "Access Restriction",
+		pathname: "access-restriction"
+	},
+	conditions: [{
+		alias: "Umb.Condition.SectionAlias",
+		match: "Umb.Section.Content"
+	}]
+}], he = /* @__PURE__ */ h({ default: () => $ }), Q, $, ge = m((() => {
+	K(), Y(), Q = class extends s(e) {
+		#e;
+		constructor() {
+			super(), this.isValid = !1, this.errors = {}, this.id = "", this.ip = "", this.description = "", this.initialIp = "", this.consumeContext(G, (e) => {
+				this.#e = e;
+			});
+		}
+		firstUpdated() {
+			if (this.modalContext?.data?.ipEntry) {
+				let { id: e, ip: t, description: n } = this.modalContext.data.ipEntry;
+				this.id = e ?? "", this.ip = t ?? "", this.description = n ?? "", this.initialIp = t ?? "";
+			} else console.error("No IP Entry data found in modal context");
+		}
+		_handleClose() {
+			this.modalContext?.submit();
+		}
+		async _handleSubmit(e) {
+			if (e.preventDefault(), await this._validateForm(), !this.isValid) {
+				console.error("Form validation failed:");
+				return;
+			}
+			let t = {
+				id: this.id || "00000000-0000-0000-0000-000000000000",
+				ip: this.ip,
+				description: this.description,
+				isDeleted: !1,
+				isEditable: !0
+			};
+			try {
+				this.#e ? await this.#e.saveIpAccessEntry(t) : console.error("Access restriction context is not available"), this._handleClose();
+			} catch (e) {
+				console.error("Failed to save IP access entry:", e);
+			}
+		}
+		_handleInputChange(e) {
+			let t = /* @__PURE__ */ function(e) {
+				return e.Id = "id", e.Ip = "ip", e.Description = "description", e;
+			}({}), n = (e) => Object.values(t).includes(e), r = e.target;
+			n(r.name) && (this[r.name] = r.value), this._validateForm();
+		}
+		_validateIp(e) {
+			if (!e) return !1;
+			let t = (e.match(/\*/g) || []).length;
+			return t > 0 ? !!(t === 1 && e.endsWith("*")) : /((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))/.test(e);
+		}
+		async _checkDuplicateIps(e) {
+			try {
+				let t = this.#e?.ips ?? ie();
+				return (await re(t)).includes(e) && this.initialIp !== e;
+			} catch (e) {
+				return console.error("No duplicates found in ips observable, error:", e), !1;
+			}
+		}
+		async _validateForm() {
+			this.errors = {}, this._validateIp(this.ip) ? await this._checkDuplicateIps(this.ip) && (this.errors.ip = "The IP Address is already whitelisted", this.requestUpdate()) : this.errors.ip = "Invalid IP", this.description || (this.errors.description = "A description is required"), this.isValid = Object.keys(this.errors).length === 0;
+		}
+		render() {
+			return r`
       <umb-body-layout headline="IP Access Restriction">
         <uui-box>
           <p>
@@ -808,7 +685,7 @@ let I = class extends st(Z) {
                     @input="${this._handleInputChange}"
                   >
                   </uui-input>
-                  ${this.errors.ip ? N`<div class="error-message">${this.errors.ip}</div>` : ""}
+                  ${this.errors.ip ? r`<div class="error-message">${this.errors.ip}</div>` : ""}
                 </div>
               </uui-form-layout-item>
 
@@ -828,7 +705,7 @@ let I = class extends st(Z) {
                     @input="${this._handleInputChange}"
                   >
                   </uui-input>
-                  ${this.errors.description ? N`<div class="error-message">${this.errors.description}</div>` : ""}
+                  ${this.errors.description ? r`<div class="error-message">${this.errors.description}</div>` : ""}
                 </div>
               </uui-form-layout-item>
 
@@ -852,10 +729,9 @@ let I = class extends st(Z) {
         >
       </umb-body-layout>
     `;
-  }
-};
-D = /* @__PURE__ */ new WeakMap();
-I.styles = tt`
+		}
+		static {
+			this.styles = t`
     #id {
       display: none;
     }
@@ -863,37 +739,34 @@ I.styles = tt`
       color: rgb(191, 33, 78);
     }
   `;
-_([
-  ut()
-], I.prototype, "isValid", 2);
-_([
-  h({ type: Object })
-], I.prototype, "errors", 2);
-_([
-  h({ type: String })
-], I.prototype, "id", 2);
-_([
-  h({ type: String })
-], I.prototype, "ip", 2);
-_([
-  h({ type: String })
-], I.prototype, "description", 2);
-_([
-  h({ attribute: !1 })
-], I.prototype, "data", 2);
-_([
-  h({ attribute: !1 })
-], I.prototype, "modalContext", 2);
-I = _([
-  et("ip-access-restriction-modal")
-], I);
-const Jt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  get default() {
-    return I;
-  }
-}, Symbol.toStringTag, { value: "Module" }));
-export {
-  oe as onInit
+		}
+	}, J([a()], Q.prototype, "isValid", void 0), J([i({ type: Object })], Q.prototype, "errors", void 0), J([i({ type: String })], Q.prototype, "id", void 0), J([i({ type: String })], Q.prototype, "ip", void 0), J([i({ type: String })], Q.prototype, "description", void 0), J([i({ attribute: !1 })], Q.prototype, "data", void 0), J([i({ attribute: !1 })], Q.prototype, "modalContext", void 0), Q = J([n("ip-access-restriction-modal")], Q), $ = Q;
+})), _e = [{
+	type: "modal",
+	alias: "ip-entry-modal",
+	name: "IP Entry Modal",
+	js: () => Promise.resolve().then(() => (ge(), he))
+}], ve = [{
+	type: "globalContext",
+	alias: "ip-access-restriction-context",
+	name: "IP Access Restriction Context",
+	js: () => Promise.resolve().then(() => (K(), ue))
+}];
+//#endregion
+//#region src/index.ts
+V();
+var ye = (e, t) => {
+	t.registerMany([
+		...me,
+		..._e,
+		...ve
+	]), e.consumeContext(ae, (e) => {
+		if (!e) return;
+		let t = e.getOpenApiConfiguration();
+		x.BASE = t.base ?? "", x.TOKEN = t.token ?? void 0, x.CREDENTIALS = t.credentials ?? "include";
+	});
 };
+//#endregion
+export { ye as onInit };
+
 //# sourceMappingURL=index.js.map
