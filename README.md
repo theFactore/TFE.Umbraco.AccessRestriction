@@ -14,16 +14,16 @@
 
 ## Package Installation
 
-The Umbraco 17.1.0 version of this package is only available via [NuGet](https://www.nuget.org/packages/TFE.Umbraco.AccessRestriction). To install the package, you can use either .NET CLI:
+The Umbraco 17.7.2 version of this package is available via [NuGet](https://www.nuget.org/packages/TFE.Umbraco.AccessRestriction). To install the package, you can use either .NET CLI:
 
 ```C#
-dotnet add package TFE.Umbraco.AccessRestriction --version 17.1.0
+dotnet add package TFE.Umbraco.AccessRestriction --version 17.7.2
 ```
 
 or the older NuGet Package Manager:
 
 ```C#
-NuGet\Install-Package TFE.Umbraco.AccessRestriction --version 17.1.0
+NuGet\Install-Package TFE.Umbraco.AccessRestriction --version 17.7.2
 ```
 
 ## Umbraco Installation
